@@ -59,6 +59,9 @@
     <Compile Include="ResponseFormatting\ResponseFormatType.cs" />
     <Compile Include="ResponseFormatting\ResponseMappingSettings.cs" />
     <Compile Include="ResponseFormatting\ResponseTypeMapping.cs" />
+    <Compile Include="Routing\IRestfulActionResolver.cs" />
+    <Compile Include="Routing\RestfulAction.cs" />
+    <Compile Include="Routing\RestfulActionResolver.cs" />
     <Compile Include="Routing\SimplyRestfulRouting.cs" />
   </ItemGroup>
   <ItemGroup>

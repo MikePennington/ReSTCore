@@ -5,52 +5,8 @@ using System.Web.Routing;
 
 namespace ImpulseReSTCore.Routing
 {
-    public enum RestfulAction
-    {
-        Show = 1,
-        Create = 2,
-        Update = 4,
-        Destroy = 8,
-        Index = 16,
-        Help = 32,
-        None = 16384,
-    }
-
-    public interface IRestfulActionResolver
-    {
-        RestfulAction ResolveAction(RequestContext context);
-    }
-
-    public class RestfulActionResolver : IRestfulActionResolver
-    {
-        public RestfulAction ResolveAction(RequestContext context)
-        {
-            if (context.HttpContext.Request == null)
-                throw new NullReferenceException("Request in RequestContext.HttpContext cannot be null.");
-            if (string.IsNullOrEmpty(context.HttpContext.Request.HttpMethod) ||
-                !string.Equals(context.HttpContext.Request.HttpMethod.ToUpperInvariant(), "POST", StringComparison.Ordinal))
-                return RestfulAction.None;
-            return ResolvePostAction(context);
-        }
-
-        private static RestfulAction ResolvePostAction(RequestContext context)
-        {
-            if (context.HttpContext.Request.Form == null)
-                return RestfulAction.None;
-            string str = context.HttpContext.Request.Form["_method"];
-            if (string.IsNullOrEmpty(str))
-                return RestfulAction.None;
-            string b = str.Trim().ToUpperInvariant();
-            if (string.Equals("PUT", b))
-                return RestfulAction.Update;
-            if (string.Equals("DELETE", b, StringComparison.Ordinal))
-                return RestfulAction.Destroy;
-            return RestfulAction.None;
-        }
-    }
-
     /// <summary>A Rails inspired Restful Routing Handler</summary>
-    public class SimplyRestfulRouteHandler : MvcRouteHandler
+    public class RestfulRouteHandler : MvcRouteHandler
     {
         /// <summary>Matches anything.</summary>
         public const string MatchAny = ".+";
@@ -69,11 +25,11 @@ namespace ImpulseReSTCore.Routing
 
         private IRestfulActionResolver _actionResolver;
 
-        public SimplyRestfulRouteHandler()
+        public RestfulRouteHandler()
         {
         }
 
-        public SimplyRestfulRouteHandler(IRestfulActionResolver actionResolver)
+        public RestfulRouteHandler(IRestfulActionResolver actionResolver)
         {
             _actionResolver = actionResolver;
         }
@@ -97,7 +53,7 @@ namespace ImpulseReSTCore.Routing
         /// <param name="areaPrefix">An area inside the site to prefix the <see cref="Route.Url"/> with.</param>
         /// <seealso cref="BuildRoutes(RouteCollection,string,string,string)"/>
         /// <example lang="c#">
-        /// SimplyRestfulRouteHandler.BuildRoutes(RouteTable.Routes, "private/admin")
+        /// RestfulRouteHandler.BuildRoutes(RouteTable.Routes, "private/admin")
         /// // Generates the Urls private/admin/[controller]/new, private/admin/[controller]/[id]/edit, etc.
         /// </example>
         public static void BuildRoutes(RouteCollection routeCollection, string areaPrefix)
