@@ -15,14 +15,23 @@ namespace ImpulseReSTCore.Mapping
                 return default(T);
             }
 
-            var initialSource = sources[0];
+            int i = 0;
+            for (; i < sources.Length; i++)
+            {
+                if (sources[i] != null)
+                    break;
+                if (i == sources.Length - 1)
+                    return null;
+            }
+
+            var initialSource = sources[i];
 
             var mappingResult = Map<T>(initialSource);
 
             // Now map the remaining source objects
-            if (sources.Count() > 1)
+            if (sources.Count() > i)
             {
-                Map(mappingResult, sources.Skip(1).ToArray());
+                Map(mappingResult, sources.Skip(i).ToArray());
             }
 
             return mappingResult;
@@ -39,7 +48,7 @@ namespace ImpulseReSTCore.Mapping
 
             foreach (var source in sources)
             {
-                if(source == null)
+                if (source == null)
                     continue;
                 var sourceType = source.GetType();
                 Mapper.Map(source, destination, sourceType, destinationType);

@@ -49,10 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResults\HelpResult.cs" />
     <Compile Include="ActionResults\JsonpResult.cs" />
     <Compile Include="ActionResults\XmlResult.cs" />
     <Compile Include="BaseController.cs" />
-    <Compile Include="Entity\RestEntity.cs" />
+    <Compile Include="DTO\RestEntity.cs" />
     <Compile Include="Mapping\EntityMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseFormatting\ResponseFormatDecider.cs" />
@@ -62,7 +63,7 @@
     <Compile Include="Routing\IRestfulActionResolver.cs" />
     <Compile Include="Routing\RestfulAction.cs" />
     <Compile Include="Routing\RestfulActionResolver.cs" />
-    <Compile Include="Routing\SimplyRestfulRouting.cs" />
+    <Compile Include="Routing\RestfulRouteHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

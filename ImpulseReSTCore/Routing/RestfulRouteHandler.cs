@@ -73,6 +73,13 @@ namespace ImpulseReSTCore.Routing
         {
             controllerPath = FixPath(controllerPath);
 
+            // Help
+            routeCollection.Add(new Route(
+                controllerPath + "/help",
+                BuildDefaults(RestfulAction.Help, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET") }),
+                new MvcRouteHandler()));
+
             // Show
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
@@ -106,12 +113,6 @@ namespace ImpulseReSTCore.Routing
                 controllerPath,
                 BuildDefaults(RestfulAction.Create, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST") }),
-                new MvcRouteHandler()));
-
-            // Help
-            routeCollection.Add(new Route(
-                controllerPath + "/help",
-                BuildDefaults(RestfulAction.Help, controller),
                 new MvcRouteHandler()));
         }
 
