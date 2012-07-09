@@ -24,7 +24,7 @@ namespace ImpulseReSTCore.DTO
 
                 var builder = new UriBuilder(HttpContext.Current.Request.Url);
                 builder.Scheme = IsSecureDTO ? "https" : "http";
-                builder.Path = System.IO.Path.Combine(Path, Id.ToString());
+                builder.Path = System.IO.Path.Combine(Path, HttpUtility.UrlEncode(Id.ToString()));
                 if(builder.Port == 80)
                     builder.Port = -1;
                 Uri = builder.ToString();
@@ -34,8 +34,10 @@ namespace ImpulseReSTCore.DTO
         [XmlAttribute]
         public string Uri { get; set; }
 
+        [XmlIgnore]
         public abstract string Path { get; }
 
+        [XmlIgnore]
         public abstract bool IsSecureDTO { get; }
     }
 }

@@ -5,10 +5,12 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web.Mvc;
+using AutoMapper;
 using ImpulseReSTCore.ActionResults;
 using ImpulseReSTCore.DTO;
 using ImpulseReSTCore.Mapping;
 using ImpulseReSTCore.ResponseFormatting;
+using ImpulseReSTCore.Routing;
 
 namespace ImpulseReSTCore
 {
@@ -141,63 +143,97 @@ namespace ImpulseReSTCore
         }
 
         /// <summary> Returns the current ActionResult for the given source objects</summary>
-        /// <param name="sources">The source objects</param>
-        protected ActionResult MapResult(params object[] sources)
+        /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
+        /// <param name="dto">The dto to return</param>
+        protected ActionResult SuccessResult(RestfulAction action, TEntity dto)
         {
-            if (!sources.Any() || sources.Count() == 1 && sources[0] == null)
+            switch(action)
             {
-                SetResponseStatus(HttpStatusCode.NotFound);
-                return null;
+                case RestfulAction.Show:
+                    SetResponseStatus(HttpStatusCode.OK);
+                    return DynamicResult(dto);
+                case RestfulAction.Create:
+                    SetResponseStatus(HttpStatusCode.Created);
+                    Response.AddHeader("Content-Location", dto.Uri);
+                    return null;
+                case RestfulAction.Update:
+                    SetResponseStatus(HttpStatusCode.Accepted);
+                    Response.AddHeader("Content-Location", dto.Uri);
+                    return null;
+                case RestfulAction.Destroy:
+                    SetResponseStatus(HttpStatusCode.OK);
+                    return null;
+                default:
+                    SetResponseStatus(HttpStatusCode.BadRequest, "Unknown action");
+                    return null;
             }
-
-            var obj = EntityMapper.Map<TEntity>(sources);
-            return ShowResult(obj);
         }
 
-        protected ActionResult ShowResult(TEntity entity)
+        /// <summary> Returns the current ActionResult for the given source objects</summary>
+        /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
+        /// <param name="dtos">The list of dtos to return</param>
+        protected ActionResult SuccessResult(RestfulAction action, IEnumerable<TEntity> dtos)
         {
-            SetResponseStatus(HttpStatusCode.OK);
-            return DynamicResult(entity);
+            switch (action)
+            {
+                case RestfulAction.Index:
+                    SetResponseStatus(HttpStatusCode.OK);
+                    return DynamicResult(dtos);
+                default:
+                    SetResponseStatus(HttpStatusCode.BadRequest, "Unknown action");
+                    return null;
+            }
         }
 
-        protected ActionResult NotFoundResult(TId id)
+        /// <summary> Returns the current ActionResult for the given source objects</summary>
+        /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
+        /// <param name="sources">The source objects</param>
+        protected ActionResult MapSuccessResult(RestfulAction action, params object[] sources)
         {
-            SetResponseStatus(HttpStatusCode.NotFound, string.Format("{0} with id {1} was not found", typeof(TEntity).Name, id));
-            return null;
+            TEntity dto = null;
+            if (sources.Any())
+                dto = EntityMapper.Map<TEntity>(sources);
+            return SuccessResult(action, dto);
         }
 
-        protected ActionResult CreatedResult(TEntity entity)
+        /// <summary> Returns the current ActionResult for the given source objects</summary>
+        /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
+        /// <param name="sources">The source objects</param>
+        protected ActionResult MapSuccessResult(RestfulAction action, IEnumerable<object> sources)
         {
-            SetResponseStatus(HttpStatusCode.Created);
-            Response.AddHeader("Content-Location", entity.Uri);
-            return null;
+            var dtos = Mapper.Map<List<TEntity>>(sources);
+            return SuccessResult(action, dtos);
         }
 
-        protected ActionResult UpdatedResult(TEntity entity)
+        /// <summary>
+        /// Used to return an error state
+        /// </summary>
+        /// <param name="httpStatusCode">The Http status code</param>
+        /// <param name="errorMessage">The error message</param>
+        /// <returns></returns>
+        protected ActionResult ErrorResult(HttpStatusCode httpStatusCode, string errorMessage = null)
         {
-            SetResponseStatus(HttpStatusCode.Accepted);
-            Response.AddHeader("Content-Location", entity.Uri);
-            return null;
+            SetResponseStatus(httpStatusCode, errorMessage);
+            return DynamicResult(null);
         }
 
-        protected ActionResult DeletedResult()
-        {
-            SetResponseStatus(HttpStatusCode.OK);
-            return null;
-        }
-
-        protected ActionResult DynamicResult(TEntity entity)
+        /// <summary>
+        /// This should only be called directly from the controller if you are not returning the base entity.
+        /// </summary>
+        /// <param name="result">The result to return</param>
+        /// <returns></returns>
+        private ActionResult DynamicResult(object result)
         {
             ResponseFormatType bodyFormat = new ResponseFormatDecider(Settings).Decide(HttpContext.Request.AcceptTypes, HttpContext.Request.QueryString);
             switch (bodyFormat)
             {
                 case ResponseFormatType.Xml:
                 case ResponseFormatType.Html:
-                    return new XmlResult(entity);
+                    return new XmlResult(result);
                 case ResponseFormatType.Json:
-                    return Json(entity, JsonRequestBehavior.AllowGet);
+                    return Json(result, JsonRequestBehavior.AllowGet);
                 case ResponseFormatType.Jsonp:
-                    return new JsonpResult(entity);
+                    return new JsonpResult(result);
                 /*case ResponseFormatType.Html:
                     if (!string.IsNullOrWhiteSpace(viewName))
                         return View(viewName, data);
@@ -235,7 +271,7 @@ namespace ImpulseReSTCore
         /// This method will set the Method Not Allowed status code - Because an action is not available in the given context
         /// 10.4.6 405 Method Not Allowed
         /// </summary>
-        protected void SetMethodNotAllowed()
+        private void SetMethodNotAllowed()
         {
             string msg = string.Format("Action {0} is not an acceptable action for this resource.", ControllerContext.RouteData.GetRequiredString("action"));
             SetResponseStatus(HttpStatusCode.MethodNotAllowed, msg);
@@ -244,7 +280,7 @@ namespace ImpulseReSTCore
         /// <summary>
         /// This method will accept a status code and message and modify the response according to the RFC2616 specification
         /// </summary>
-        public void SetResponseStatus(HttpStatusCode httpStatusCode, string errorMessage = null)
+        private void SetResponseStatus(HttpStatusCode httpStatusCode, string errorMessage = null)
         {
             Response.StatusCode = (int)httpStatusCode;
             Response.TrySkipIisCustomErrors = true;
