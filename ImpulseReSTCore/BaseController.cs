@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Web.Mvc;
+using System.Web.Routing;
 using AutoMapper;
 using ImpulseReSTCore.ActionResults;
+using ImpulseReSTCore.Attributes;
 using ImpulseReSTCore.DTO;
 using ImpulseReSTCore.Mapping;
+using ImpulseReSTCore.Models;
 using ImpulseReSTCore.ResponseFormatting;
 using ImpulseReSTCore.Routing;
 
@@ -42,6 +46,7 @@ namespace ImpulseReSTCore
         /// Method: GET
         /// Uri:    /[controller]/[id]
         /// </summary>
+        [Help(Ignore = true)]
         public virtual ActionResult Show(TId id)
         {
             SetMethodNotAllowed();
@@ -53,6 +58,7 @@ namespace ImpulseReSTCore
         /// Method: POST
         /// Uri:    /[controller]
         /// </summary>
+        [Help(Ignore = true)]
         public virtual ActionResult Create(TEntity obj)
         {
             SetMethodNotAllowed();
@@ -64,6 +70,7 @@ namespace ImpulseReSTCore
         /// Method: PUT
         /// Uri:    /[controller]/[id]
         /// </summary>
+        [Help(Ignore = true)]
         public virtual ActionResult Update(TId id, TEntity obj)
         {
             SetMethodNotAllowed();
@@ -75,6 +82,7 @@ namespace ImpulseReSTCore
         /// Method: DELETE
         /// Uri:    /[controller]/[id]
         /// </summary>
+        [Help(Ignore = true)]
         public virtual ActionResult Destroy(TId id)
         {
             SetMethodNotAllowed();
@@ -86,9 +94,11 @@ namespace ImpulseReSTCore
         /// Uri:    /[controller]/help
         /// </summary>
         /// <returns></returns>
-        public virtual ActionResult Help()
+        [Help("Shows help information for the current controller")]
+        public ActionResult Help()
         {
-            return new HelpResult();
+            var model = new HelpModel(this);
+            return View("~/Views/Rest/Help.cshtml", model);
         }
 
         protected bool ValidateCreate(RestEntity<TId> entity)
@@ -112,7 +122,7 @@ namespace ImpulseReSTCore
 
             if (id == null)
             {
-                SetResponseStatus(HttpStatusCode.BadRequest, "ID must be povided on update");
+                SetResponseStatus(HttpStatusCode.BadRequest, "ID must be provided on update");
                 return false;
             }
 

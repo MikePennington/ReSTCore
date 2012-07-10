@@ -1,0 +1,29 @@
+﻿@model ImpulseReSTCore.Models.HelpModel
+@{
+    Layout = "Layout.cshtml";
+    ViewBag.Title = "Help for " + @Model.ServiceName + " Service";
+}
+
+@if (Model.HelpDisabled)
+{
+    <h2>Help has been disabled for the @Model.ServiceName service.</h2>
+}
+else
+{
+    <h2>@Model.ServiceDescription</h2>
+    <table>
+        <tr>
+            <th>Path</th>
+            <th>Verbs</th>
+            <th>Description</th>
+        </tr>
+        @foreach (var route in Model.Routes)
+        {
+            <tr>
+                <td>@(route.Path)</td>
+                <td>@(route.HttpVerb)</td>
+                <td>@(route.Description)</td>
+            </tr>
+        }
+    </table>
+}
