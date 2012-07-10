@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -152,6 +153,36 @@ namespace ImpulseReSTCore
             return true;
         }
 
+        protected ActionResult HandleResult(RestfulAction action, Result<TEntity> result)
+        {
+            if (result.ResultType == ResultType.Success)
+                return MapSuccessResult(action, result.Entity);
+
+            HttpStatusCode httpStatusCode;
+            if (result.HttpStatusCode == null)
+                httpStatusCode = result.ResultType == ResultType.ClientError
+                                     ? HttpStatusCode.BadRequest
+                                     : HttpStatusCode.InternalServerError;
+            else
+                httpStatusCode = result.HttpStatusCode.Value;
+            return ErrorResult(httpStatusCode, result.ErrorCode, result.ErrorMessage);
+        }
+
+        protected ActionResult HandleResult(RestfulAction action, Result<List<TEntity>> result)
+        {
+            if (result.ResultType == ResultType.Success)
+                return MapSuccessResult(action, result.Entity);
+
+            HttpStatusCode httpStatusCode;
+            if (result.HttpStatusCode == null)
+                httpStatusCode = result.ResultType == ResultType.ClientError
+                                     ? HttpStatusCode.BadRequest
+                                     : HttpStatusCode.InternalServerError;
+            else
+                httpStatusCode = result.HttpStatusCode.Value;
+            return ErrorResult(httpStatusCode, result.ErrorCode, result.ErrorMessage);
+        }
+
         /// <summary> Returns the current ActionResult for the given source objects</summary>
         /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
         /// <param name="dto">The dto to return</param>
@@ -219,11 +250,12 @@ namespace ImpulseReSTCore
         /// Used to return an error state
         /// </summary>
         /// <param name="httpStatusCode">The Http status code</param>
+        /// <param name="errorCode">The service-specific  error code</param>
         /// <param name="errorMessage">The error message</param>
         /// <returns></returns>
-        protected ActionResult ErrorResult(HttpStatusCode httpStatusCode, string errorMessage = null)
+        protected ActionResult ErrorResult(HttpStatusCode httpStatusCode, int? errorCode = null, string errorMessage = null)
         {
-            SetResponseStatus(httpStatusCode, errorMessage);
+            SetResponseStatus(httpStatusCode, errorMessage, errorCode);
             return DynamicResult(null);
         }
 
@@ -290,7 +322,7 @@ namespace ImpulseReSTCore
         /// <summary>
         /// This method will accept a status code and message and modify the response according to the RFC2616 specification
         /// </summary>
-        private void SetResponseStatus(HttpStatusCode httpStatusCode, string errorMessage = null)
+        private void SetResponseStatus(HttpStatusCode httpStatusCode, string errorMessage = null, int? errorCode = null)
         {
             Response.StatusCode = (int)httpStatusCode;
             Response.TrySkipIisCustomErrors = true;
@@ -305,9 +337,10 @@ namespace ImpulseReSTCore
             }
 
             if(!string.IsNullOrEmpty(errorMessage))
-            {
-                Response.AddHeader("X-GS-ApplicationErrorMessage", errorMessage);
-            }
+                Response.AddHeader("X-GS-ServiceErrorMessage", errorMessage);
+
+            if (errorCode != null)
+                Response.AddHeader("X-GS-ServiceErrorCode", errorCode.ToString());
         }
 
         protected override void OnException(ExceptionContext filterContext)

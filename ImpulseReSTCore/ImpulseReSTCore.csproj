@@ -57,6 +57,8 @@
     <Compile Include="Attributes\HelpAttribute.cs" />
     <Compile Include="BaseController.cs" />
     <Compile Include="DTO\RestEntity.cs" />
+    <Compile Include="DTO\Result.cs" />
+    <Compile Include="DTO\ResultType.cs" />
     <Compile Include="Mapping\EntityMapper.cs" />
     <Compile Include="Models\HelpModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
