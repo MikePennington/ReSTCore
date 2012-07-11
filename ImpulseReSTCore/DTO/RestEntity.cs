@@ -2,6 +2,7 @@
 using System.IO;
 using System.Web;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace ImpulseReSTCore.DTO
 {
@@ -35,9 +36,11 @@ namespace ImpulseReSTCore.DTO
         public string Uri { get; set; }
 
         [XmlIgnore]
+        [JsonIgnore]
         public abstract string Path { get; }
 
         [XmlIgnore]
+        [JsonIgnore]
         public abstract bool IsSecureDTO { get; }
     }
 }

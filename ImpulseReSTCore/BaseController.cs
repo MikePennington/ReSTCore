@@ -36,6 +36,7 @@ namespace ImpulseReSTCore
         /// Method: GET
         /// Uri:    /[controller]
         /// </summary>
+        [Help(Ignore = true)]
         public virtual ActionResult Index()
         {
             SetMethodNotAllowed();
@@ -273,7 +274,7 @@ namespace ImpulseReSTCore
                 case ResponseFormatType.Html:
                     return new XmlResult(result);
                 case ResponseFormatType.Json:
-                    return Json(result, JsonRequestBehavior.AllowGet);
+                    return new ActionResults.JsonResult(result);
                 case ResponseFormatType.Jsonp:
                     return new JsonpResult(result);
                 /*case ResponseFormatType.Html:

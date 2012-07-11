@@ -25,6 +25,7 @@ namespace ImpulseReSTCore.ResponseFormatting
                                 new ResponseTypeMapping("application/json", ResponseFormatType.Json),
                                 new ResponseTypeMapping("text/x-json", ResponseFormatType.Json),
                                 new ResponseTypeMapping("text/json", ResponseFormatType.Json),
+                                new ResponseTypeMapping("application/javascript", ResponseFormatType.Jsonp),
                                 new ResponseTypeMapping("application/x-javascript", ResponseFormatType.Jsonp),
                                 new ResponseTypeMapping("text/javascript",  ResponseFormatType.Jsonp),
                                 new ResponseTypeMapping("text/x-javascript", ResponseFormatType.Jsonp)
