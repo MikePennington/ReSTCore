@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActionResults\HelpResult.cs" />
+    <Compile Include="ActionResults\HtmlResult.cs" />
     <Compile Include="ActionResults\JsonpResult.cs" />
     <Compile Include="ActionResults\JsonResult.cs" />
     <Compile Include="ActionResults\XmlResult.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="DTO\ResultType.cs" />
     <Compile Include="Mapping\EntityMapper.cs" />
     <Compile Include="Models\HelpModel.cs" />
+    <Compile Include="Models\HtmlModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResponseFormatting\ResponseFormatDecider.cs" />
     <Compile Include="ResponseFormatting\ResponseFormatType.cs" />
