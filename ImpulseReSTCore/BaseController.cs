@@ -271,17 +271,14 @@ namespace ImpulseReSTCore
             switch (bodyFormat)
             {
                 case ResponseFormatType.Xml:
-                case ResponseFormatType.Html:
                     return new XmlResult(result);
                 case ResponseFormatType.Json:
                     return new ActionResults.JsonResult(result);
                 case ResponseFormatType.Jsonp:
                     return new JsonpResult(result);
-                /*case ResponseFormatType.Html:
-                    if (!string.IsNullOrWhiteSpace(viewName))
-                        return View(viewName, data);
-                    else
-                        return DynamicResult(_settings.DefaultResponseFormatType, data, viewName);*/
+                case ResponseFormatType.Html:
+                    var model = new HtmlModel(result);
+                    return View("~/Views/Rest/Html.cshtml",model);
                 default:
                     throw new Exception("Unknown response format type");
             }
