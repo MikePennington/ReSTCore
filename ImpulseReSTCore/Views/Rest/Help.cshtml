@@ -20,9 +20,26 @@ else
         @foreach (var route in Model.Routes)
         {
             <tr>
-                <td>@(route.Path)</td>
-                <td>@(route.HttpVerb)</td>
-                <td>@(route.Description)</td>
+                <td nowrap="nowrap">@route.Path</td>
+                <td nowrap="nowrap">@route.HttpVerb</td>
+                <td>
+                    @route.Description
+                    @if (route.Parameters != null && route.Parameters.Count > 0)
+                    {
+                        <table class="parameters">
+                            <tr>
+                                <th colspan="2">Parameters</th>
+                            </tr>
+                            @foreach (var param in route.Parameters)
+                            {
+                                <tr>
+                                    <td>@param.Name</td>
+                                    <td>@param.Description</td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </td>
             </tr>
         }
     </table>

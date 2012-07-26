@@ -10,15 +10,25 @@ namespace ImpulseReSTCore.Attributes
     {
         public HelpAttribute()
         {
+            Order = int.MaxValue;
         }
 
-        public HelpAttribute(string description)
+        public HelpAttribute(string text)
         {
-            Description = description;
+            Text = text;
+            Order = int.MaxValue;
         }
 
-        public string Description { get; set; }
+        public HelpAttribute(string text, int order)
+        {
+            Text = text;
+            Order = order;
+        }
+
+        public string Text { get; set; }
 
         public bool Ignore { get; set; }
+
+        public int Order { get; set; }
     }
 }

@@ -287,27 +287,28 @@ namespace ImpulseReSTCore
             }
         }
 
-        protected bool GetParameterAsBool(string paramName)
-        {
-            return GetParameterAsBool(paramName, false);
-        }
-
-        protected bool GetParameterAsBool(string paramName, bool defaultValue)
+        protected bool GetParameterAsBool(string paramName, bool defaultValue = false)
         {
             string paramValue = Request.Params[paramName];
-            bool returnValue = defaultValue;
-            bool.TryParse(paramValue, out returnValue);
-
+            bool returnValue;
+            if(!bool.TryParse(paramValue, out returnValue))
+                returnValue = defaultValue;
             return returnValue;
         }
 
-        protected int GetParameterAsInt(string paramName, int defaultValue)
+        protected int GetParameterAsInt(string paramName, int defaultValue = 0)
         {
             string paramValue = Request.Params[paramName];
-            int returnValue = defaultValue;
-            int.TryParse(paramValue, out returnValue);
-
+            int returnValue;
+            if (!int.TryParse(paramValue, out returnValue))
+                returnValue = defaultValue;
             return returnValue;
+        }
+
+        protected string GetParameterAsString(string paramName, string defaultValue = null)
+        {
+            string paramValue = Request.Params[paramName] ?? defaultValue;
+            return paramValue;
         }
 
         /// <summary>

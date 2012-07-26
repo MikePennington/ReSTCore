@@ -49,15 +49,15 @@ namespace ImpulseReSTCore.Models
                 if (!route.Defaults.TryGetValue("Action", out action))
                     continue;
 
-                var controllerHelp = (HelpAttribute) Attribute.GetCustomAttribute(controllerType, typeof (HelpAttribute));
-                if (controllerHelp != null)
+                var help = (HelpAttribute) Attribute.GetCustomAttribute(controllerType, typeof (HelpAttribute));
+                if (help != null)
                 {
-                    if (controllerHelp.Ignore)
+                    if (help.Ignore)
                     {
                         HelpDisabled = true;
                         return;
                     }
-                    ServiceDescription = controllerHelp.Description;
+                    ServiceDescription = help.Text;
                 }
 
                 var routeModel = new RouteModel(route, controllerType, action.ToString());
@@ -86,22 +86,45 @@ namespace ImpulseReSTCore.Models
 
         public bool Ignore { get; private set; }
 
+        public int Order { get; private set; }
+
+        public List<ParameterModel> Parameters { get; private set; }
+
         private void Populate(Route route, Type controllerType, string action)
         {
             Path = "/" + route.Url;
 
+            // Get help information
             MethodInfo methodInfo = controllerType.GetMethod(action);
-            var methodHelp = (HelpAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(HelpAttribute), false);
-            if (methodHelp != null)
+            var help = (HelpAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(HelpAttribute), false);
+            if (help != null)
             {
-                if (methodHelp.Ignore)
+                if (help.Ignore)
                 {
                     Ignore = true;
                     return;
                 }
-                Description = methodHelp.Description;
+                Description = help.Text;
+                Order = help.Order;
             }
-            MethodName = action;
+            else
+            {
+                Order = int.MaxValue;
+            }
+
+            var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
+            Parameters = new List<ParameterModel>();
+            foreach (var helpParam in helpParams)
+            {
+                var paramModel = new ParameterModel
+                                     {
+                                         Name = helpParam.Name,
+                                         Description = helpParam.Text,
+                                         Order = helpParam.Order
+                                     };
+                Parameters.Add(paramModel);
+            }
+            Parameters.Sort();
 
             // Get Http verbs
             foreach (var constraint in route.Constraints)
@@ -118,14 +141,38 @@ namespace ImpulseReSTCore.Models
                     HttpVerb = httpVerbs.ToString();
                 }
             }
+
+            MethodName = action;
         }
 
         public int CompareTo(RouteModel other)
         {
-            int pathCompare = string.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
-            if (pathCompare != 0)
-                return pathCompare;
+            int compare = Order.CompareTo(other.Order);
+            if (compare != 0)
+                return compare;
+
+            compare = string.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
+            if (compare != 0)
+                return compare;
             return string.Compare(HttpVerb, other.HttpVerb, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    public class ParameterModel : IComparable<ParameterModel>
+    {
+        public string Name { get; set; }
+
+        public string Description { get; set; }
+
+        public int Order { get; set; }
+
+        public int CompareTo(ParameterModel other)
+        {
+            int compare = Order.CompareTo(other.Order);
+            if (compare != 0)
+                return compare;
+
+            return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
