@@ -112,7 +112,7 @@ namespace ImpulseReSTCore.Routing
             routeCollection.Add(new Route(
                 controllerPath,
                 BuildDefaults(RestfulAction.Create, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST") }),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST", "PUT") }),
                 new MvcRouteHandler()));
         }
 

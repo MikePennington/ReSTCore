@@ -73,6 +73,7 @@ namespace ImpulseReSTCore.Models
     {
         internal RouteModel(Route route, Type controllerType, string action)
         {
+            Order = int.MaxValue;
             Populate(route, controllerType, action);
         }
 
@@ -96,35 +97,34 @@ namespace ImpulseReSTCore.Models
 
             // Get help information
             MethodInfo methodInfo = controllerType.GetMethod(action);
-            var help = (HelpAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(HelpAttribute), false);
-            if (help != null)
+            if (methodInfo != null)
             {
-                if (help.Ignore)
+                var help = (HelpAttribute) Attribute.GetCustomAttribute(methodInfo, typeof (HelpAttribute), false);
+                if (help != null)
                 {
-                    Ignore = true;
-                    return;
+                    if (help.Ignore)
+                    {
+                        Ignore = true;
+                        return;
+                    }
+                    Description = help.Text;
+                    Order = help.Order;
                 }
-                Description = help.Text;
-                Order = help.Order;
-            }
-            else
-            {
-                Order = int.MaxValue;
-            }
 
-            var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
-            Parameters = new List<ParameterModel>();
-            foreach (var helpParam in helpParams)
-            {
-                var paramModel = new ParameterModel
-                                     {
-                                         Name = helpParam.Name,
-                                         Description = helpParam.Text,
-                                         Order = helpParam.Order
-                                     };
-                Parameters.Add(paramModel);
+                var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
+                Parameters = new List<ParameterModel>();
+                foreach (var helpParam in helpParams)
+                {
+                    var paramModel = new ParameterModel
+                    {
+                        Name = helpParam.Name,
+                        Description = helpParam.Text,
+                        Order = helpParam.Order
+                    };
+                    Parameters.Add(paramModel);
+                }
+                Parameters.Sort();
             }
-            Parameters.Sort();
 
             // Get Http verbs
             foreach (var constraint in route.Constraints)

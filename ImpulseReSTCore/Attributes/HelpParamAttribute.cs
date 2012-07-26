@@ -23,6 +23,7 @@ namespace ImpulseReSTCore.Attributes
 
         public HelpParamAttribute(string name, string text, int order)
         {
+            Name = name;
             Text = text;
             Order = order;
         }
