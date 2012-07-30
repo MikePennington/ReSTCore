@@ -2,13 +2,12 @@
 <package >
   <metadata>
     <id>ReSTCore</id>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <title>ReSTCore</title>
     <authors>Mike Pennington</authors>
     <owners>Impulse DEV</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Framework to easily build standards-based ReST services.</description>
-    <copyright>Copyright 2012</copyright>
     <tags></tags>
   </metadata>
 </package>

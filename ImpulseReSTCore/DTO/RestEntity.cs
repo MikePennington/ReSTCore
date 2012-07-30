@@ -23,7 +23,7 @@ namespace ImpulseReSTCore.DTO
                 if (Id == null)
                     return;
 
-                var builder = new UriBuilder(HttpContext.Current.Request.Url);
+                var builder = HttpContext.Current == null ? new UriBuilder() : new UriBuilder(HttpContext.Current.Request.Url);
                 builder.Scheme = IsSecureDTO ? "https" : "http";
                 builder.Path = System.IO.Path.Combine(Path, HttpUtility.UrlEncode(Id.ToString()));
                 if(builder.Port == 80)
