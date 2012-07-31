@@ -13,6 +13,10 @@ namespace ImpulseReSTCore
     {
         public static void Register()
         {
+            // Remove MVC header
+            MvcHandler.DisableMvcResponseHeader = true;
+
+            // Register value provider factories
             System.Web.Mvc.ValueProviderFactories.Factories.Add(new JsonValueProviderFactory());
             System.Web.Mvc.ValueProviderFactories.Factories.Add(new XmlValueProviderFactory());
         }
