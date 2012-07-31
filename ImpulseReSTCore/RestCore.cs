@@ -11,13 +11,15 @@ namespace ImpulseReSTCore
 {
     public static class RestCore
     {
-        public static void Register(bool registerRoutes)
+        public static void Register()
         {
             System.Web.Mvc.ValueProviderFactories.Factories.Add(new JsonValueProviderFactory());
             System.Web.Mvc.ValueProviderFactories.Factories.Add(new XmlValueProviderFactory());
+        }
 
-            if(registerRoutes)
-                RestfulRouteHandler.BuildRoutes(RouteTable.Routes);
+        public static void RegisterAllRoutes(string idRegex)
+        {
+            RestfulRouteHandler.BuildRoutes(RouteTable.Routes, idRegex);
         }
     }
 }

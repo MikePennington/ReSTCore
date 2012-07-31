@@ -8,21 +8,6 @@ namespace ImpulseReSTCore.Routing
     /// <summary>A Rails inspired Restful Routing Handler</summary>
     public class RestfulRouteHandler : MvcRouteHandler
     {
-        /// <summary>Matches anything.</summary>
-        public const string MatchAny = ".+";
-
-        /// <summary>Matches a base64 encoded <see cref="Guid"/></summary>
-        public const string MatchBase64Guid = @"[a-zA-Z0-9+/=]{22,24}";
-
-        /// <summary>Matches a <see cref="Guid"/><c>@"\{?[a-fA-F0-9]{8}(?:-(?:[a-fA-F0-9]){4}){3}-[a-fA-F0-9]{12}\}?"</c></summary>
-        public const string MatchGuid = @"\{?[a-fA-F0-9]{8}(?:-(?:[a-fA-F0-9]){4}){3}-[a-fA-F0-9]{12}\}?";
-
-        /// <summary>Matches a Positive <see cref="int"/> <c>@"\d{1,10}"</c></summary>
-        public const string MatchPositiveInteger = @"\d{1,10}";
-
-        /// <summary>Matches a Positive <see cref="long"/> <c>@"\d{1,19}"</c></summary>
-        public const string MatchPositiveLong = @"\d{1,19}";
-
         private IRestfulActionResolver _actionResolver;
 
         public RestfulRouteHandler()
@@ -39,10 +24,11 @@ namespace ImpulseReSTCore.Routing
         /// By default a positive integer validator is set for the Id parameter of the <see cref="Route.Values"/>.
         /// </summary>
         /// <param name="routeCollection">The route collection to add the routes to.</param>
+        /// <param name="idRegex">The regex used to match the entity id</param>
         /// <seealso cref="BuildRoutes(RouteCollection,string,string,string)"/>
-        public static void BuildRoutes(RouteCollection routeCollection)
+        public static void BuildRoutes(RouteCollection routeCollection, string idRegex)
         {
-            BuildRoutes(routeCollection, "{controller}", MatchPositiveInteger, null);
+            BuildRoutes(routeCollection, "{controller}", idRegex, null);
         }
 
         /// <summary>
@@ -51,14 +37,15 @@ namespace ImpulseReSTCore.Routing
         /// </summary>
         /// <param name="routeCollection">The route collection to add the routes to.</param>
         /// <param name="areaPrefix">An area inside the site to prefix the <see cref="Route.Url"/> with.</param>
+        /// <param name="idRegex">The regex used to match the entity id</param>
         /// <seealso cref="BuildRoutes(RouteCollection,string,string,string)"/>
         /// <example lang="c#">
         /// RestfulRouteHandler.BuildRoutes(RouteTable.Routes, "private/admin")
         /// // Generates the Urls private/admin/[controller]/new, private/admin/[controller]/[id]/edit, etc.
         /// </example>
-        public static void BuildRoutes(RouteCollection routeCollection, string areaPrefix)
+        public static void BuildRoutes(RouteCollection routeCollection, string areaPrefix, string idRegex)
         {
-            BuildRoutes(routeCollection, FixPath(areaPrefix) + "/{controller}", MatchPositiveInteger, null);
+            BuildRoutes(routeCollection, FixPath(areaPrefix) + "/{controller}", idRegex, null);
         }
 
         /// <summary>
@@ -84,21 +71,21 @@ namespace ImpulseReSTCore.Routing
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
                 BuildDefaults(RestfulAction.Show, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? MatchAny }),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
 
             // Update
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
                 BuildDefaults(RestfulAction.Update, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? MatchAny }),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
 
             // Delete
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
                 BuildDefaults(RestfulAction.Destroy, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("DELETE"), id = idValidationRegex ?? MatchAny }),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("DELETE"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
 
             // List

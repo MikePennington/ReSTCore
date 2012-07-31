@@ -71,6 +71,7 @@
     <Compile Include="ResponseFormatting\ResponseTypeMapping.cs" />
     <Compile Include="RestCore.cs" />
     <Compile Include="Routing\IRestfulActionResolver.cs" />
+    <Compile Include="Routing\RegexPattern.cs" />
     <Compile Include="Routing\RestfulAction.cs" />
     <Compile Include="Routing\RestfulActionResolver.cs" />
     <Compile Include="Routing\RestfulRouteHandler.cs" />
