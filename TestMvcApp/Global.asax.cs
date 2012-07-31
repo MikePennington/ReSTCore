@@ -21,10 +21,9 @@ namespace TestMvcApp
 
         public static void RegisterRoutes(RouteCollection routes)
         {
-            RestCore.Register();
+            RestCore.Register(true);
 
-            RestfulRouteHandler.BuildRoutes(routes, "/Things", RestfulRouteHandler.MatchPositiveInteger, "Things");
-
+            //RestfulRouteHandler.BuildRoutes(routes, "/Things", RestfulRouteHandler.MatchPositiveInteger, "Things");
         }
 
         protected void Application_Start()

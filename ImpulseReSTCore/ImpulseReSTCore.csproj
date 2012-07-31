@@ -51,7 +51,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionResults\HelpResult.cs" />
     <Compile Include="ActionResults\HtmlResult.cs" />
     <Compile Include="ActionResults\JsonpResult.cs" />
     <Compile Include="ActionResults\JsonResult.cs" />
