@@ -6,7 +6,7 @@ using ImpulseReSTCore.DTO;
 
 namespace TestMvcApp.DTOs
 {
-    public class Thing : RestEntity<string>
+    public class Thing : RestEntity<int>
     {
         public string Name { get; set; }
 

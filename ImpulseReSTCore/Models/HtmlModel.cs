@@ -13,7 +13,6 @@ namespace ImpulseReSTCore.Models
     public struct TypeStruct
     {
         public ObjectStruct[] htmlObjects;
-
     }
     
     public struct ObjectStruct
@@ -38,6 +37,7 @@ namespace ImpulseReSTCore.Models
         {
             return ModelName;
         }
+
         private void Populate(object objectToSerialize)
         {
             if (objectToSerialize == null)
@@ -82,15 +82,7 @@ namespace ImpulseReSTCore.Models
             for (int i = 0; i < objectProperties.Length; ++i)
             {
                 object t = objectProperties[i].GetValue(objectToSerialize, null);
-                if (t != null)
-                {
-                    newStruct.htmlObjects[i].ObjectValue = t.ToString();
-                }
-                else
-                {
-                    newStruct.htmlObjects[i].ObjectValue = "NULL";
-                }
-
+                newStruct.htmlObjects[i].ObjectValue = (t != null ? t.ToString() : "NULL");
                 newStruct.htmlObjects[i].ObjectType = objectProperties[i].PropertyType.FullName;
             }
 

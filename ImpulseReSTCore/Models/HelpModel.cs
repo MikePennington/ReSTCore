@@ -60,7 +60,7 @@ namespace ImpulseReSTCore.Models
                     ServiceDescription = help.Text;
                 }
 
-                var routeModel = new RouteModel(route, controllerType, action.ToString());
+                var routeModel = new RouteModel(route, controller, action.ToString());
                 if (!routeModel.Ignore)
                     Routes.Add(routeModel);
             }
@@ -71,10 +71,10 @@ namespace ImpulseReSTCore.Models
 
     public class RouteModel : IComparable<RouteModel>
     {
-        internal RouteModel(Route route, Type controllerType, string action)
+        internal RouteModel(Route route, Controller controller, string action)
         {
             Order = int.MaxValue;
-            Populate(route, controllerType, action);
+            Populate(route, controller, action);
         }
 
         public string Path { get; private set; }
@@ -91,11 +91,13 @@ namespace ImpulseReSTCore.Models
 
         public List<ParameterModel> Parameters { get; private set; }
 
-        private void Populate(Route route, Type controllerType, string action)
+        private void Populate(Route route, Controller controller, string action)
         {
             Path = "/" + route.Url;
+            Path = Path.Replace("{controller}", controller.RouteData.Values["controller"].ToString());
 
             // Get help information
+            Type controllerType = controller.GetType();
             MethodInfo methodInfo = controllerType.GetMethod(action);
             if (methodInfo != null)
             {

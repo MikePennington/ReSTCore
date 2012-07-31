@@ -12,17 +12,28 @@ using TestMvcApp.DTOs;
 
 namespace TestMvcApp.Controllers
 {
-    public class ThingsController : BaseController<string, Thing>
+    [Help("This is just a test service")]
+    public class ThingsController : BaseController<int, Thing>
     {
-        [Help("The search method")]
+        private static Dictionary<int, Thing> Repo;
+
+        public ThingsController()
+        {
+            if (Repo == null)
+            {
+                Repo = new Dictionary<int, Thing>
+                           {
+                               {1, new Thing {Id = 1, Name = "Thing 1"}},
+                               {2, new Thing {Id = 2, Name = "Thing 2"}},
+                               {3, new Thing {Id = 3, Name = "Thing 3"}}
+                           };
+            }
+        }
+
+        [Help("Lists things")]
         public override ActionResult Index()
         {
-            var things = new List<Thing>
-                             {
-                                 new Thing {Id = "1", Name = "Thing 1"},
-                                 new Thing {Id = "2", Name = "Thing 2"},
-                                 new Thing {Id = "3", Name = "Thing 3"}
-                             };
+            var things = Repo.Values.ToList();
             var result = new Result<List<Thing>>
                              {
                                  Entity = things,
@@ -31,31 +42,49 @@ namespace TestMvcApp.Controllers
             return HandleResult(RestfulAction.Index, result);
         }
 
-        [Help("The create method")]
+        [Help("Creates a new thing")]
         public override ActionResult Create(Thing thing)
         {
             if (!ValidateCreate(thing))
                 return null;
 
+            thing.Id = Repo.Keys.Max() + 1;
+            Repo.Add(thing.Id, thing);
+
             var result = new Result<Thing>
                              {
-                                 Entity = new Thing {Id = "1", Name = "Thing 1"},
+                                 Entity = thing,
                                  ResultType = ResultType.Success
                              };
             return HandleResult(RestfulAction.Create, result);
         }
 
-        [Help("The update method")]
-        public override ActionResult Update(string id, Thing thing)
+        [Help("Updates a thing")]
+        public override ActionResult Update(int id, Thing thing)
         {
             if (!ValidateUpdate(id, thing))
                 return null;
 
-            var result = new Result<Thing>
+            Result<Thing> result = null;
+            if (!Repo.ContainsKey(id))
             {
-                Entity = new Thing { Id = "1", Name = "Thing 1" },
-                ResultType = ResultType.Success
-            };
+                result = new Result<Thing>
+                             {
+                                 ErrorMessage = string.Format("Thing {0} not found", thing.Id),
+                                 ResultType = ResultType.ClientError
+                             };
+            }
+            else
+            {
+                thing.Id = id;
+                Repo.Remove(thing.Id);
+                Repo.Add(thing.Id, thing);
+                result = new Result<Thing>
+                             {
+                                 Entity = thing,
+                                 ResultType = ResultType.Success
+                             };
+            }
 
             return HandleResult(RestfulAction.Update, result);
         }
