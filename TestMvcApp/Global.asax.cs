@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ImpulseReSTCore;
 using ImpulseReSTCore.Routing;
 
 namespace TestMvcApp
@@ -20,7 +21,7 @@ namespace TestMvcApp
 
         public static void RegisterRoutes(RouteCollection routes)
         {
-            routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            RestCore.Register();
 
             RestfulRouteHandler.BuildRoutes(routes, "/Things", RestfulRouteHandler.MatchPositiveInteger, "Things");
 
