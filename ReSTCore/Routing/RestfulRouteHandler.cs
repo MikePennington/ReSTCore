@@ -73,6 +73,11 @@ namespace ReSTCore.Routing
                 BuildDefaults(RestfulAction.Show, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
+            routeCollection.Add(new Route(
+                controllerPath + "/{id}/{property}",
+                BuildDefaults(RestfulAction.ShowProperty, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                new MvcRouteHandler()));
 
             // Update
             routeCollection.Add(new Route(
@@ -80,15 +85,20 @@ namespace ReSTCore.Routing
                 BuildDefaults(RestfulAction.Update, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
+            routeCollection.Add(new Route(
+                controllerPath + "/{id}/{property}",
+                BuildDefaults(RestfulAction.UpdateProperty, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                new MvcRouteHandler()));
 
             // Delete
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
-                BuildDefaults(RestfulAction.Destroy, controller),
+                BuildDefaults(RestfulAction.Delete, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("DELETE"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
 
-            // List
+            // Index
             routeCollection.Add(new Route(
                 controllerPath,
                 BuildDefaults(RestfulAction.Index, controller),
@@ -99,7 +109,7 @@ namespace ReSTCore.Routing
             routeCollection.Add(new Route(
                 controllerPath,
                 BuildDefaults(RestfulAction.Create, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST", "PUT") }),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST") }),
                 new MvcRouteHandler()));
         }
 

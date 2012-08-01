@@ -54,6 +54,18 @@ namespace ReSTCore
         }
 
         /// <summary>
+        /// Returns one object
+        /// Method: GET
+        /// Uri:    /[controller]/[id]/[property]
+        /// </summary>
+        [Help(Ignore = true)]
+        public virtual ActionResult ShowProperty(TId id, string property)
+        {
+            SetMethodNotAllowed();
+            return null;
+        }
+
+        /// <summary>
         /// Creates a new object
         /// Method: POST
         /// Uri:    /[controller]
@@ -78,12 +90,24 @@ namespace ReSTCore
         }
 
         /// <summary>
+        /// Edits an existing object
+        /// Method: PUT
+        /// Uri:    /[controller]/[id]/[property]
+        /// </summary>
+        [Help(Ignore = true)]
+        public virtual ActionResult UpdateProperty(TId id, string property, object value)
+        {
+            SetMethodNotAllowed();
+            return null;
+        }
+
+        /// <summary>
         /// Deletes an existing object
         /// Method: DELETE
         /// Uri:    /[controller]/[id]
         /// </summary>
         [Help(Ignore = true)]
-        public virtual ActionResult Destroy(TId id)
+        public virtual ActionResult Delete(TId id)
         {
             SetMethodNotAllowed();
             return null;
@@ -200,7 +224,7 @@ namespace ReSTCore
                     SetResponseStatus(HttpStatusCode.Accepted);
                     Response.AddHeader("Content-Location", dto.Uri);
                     return null;
-                case RestfulAction.Destroy:
+                case RestfulAction.Delete:
                     SetResponseStatus(HttpStatusCode.OK);
                     return null;
                 default:

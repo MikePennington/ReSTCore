@@ -26,7 +26,7 @@ namespace ReSTCore.Routing
             if (string.Equals("PUT", b))
                 return RestfulAction.Update;
             if (string.Equals("DELETE", b, StringComparison.Ordinal))
-                return RestfulAction.Destroy;
+                return RestfulAction.Delete;
             return RestfulAction.None;
         }
     }
