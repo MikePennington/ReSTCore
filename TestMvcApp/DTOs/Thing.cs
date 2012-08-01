@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using ImpulseReSTCore.DTO;
+using ReSTCore.DTO;
 
 namespace TestMvcApp.DTOs
 {

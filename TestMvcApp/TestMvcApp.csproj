@@ -138,9 +138,9 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImpulseReSTCore\ImpulseReSTCore.csproj">
+    <ProjectReference Include="..\ReSTCore\ReSTCore.csproj">
       <Project>{CF9485BA-74FD-4174-9D12-E216316C5D2A}</Project>
-      <Name>ImpulseReSTCore</Name>
+      <Name>ReSTCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
