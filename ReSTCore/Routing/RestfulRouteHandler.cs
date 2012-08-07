@@ -86,6 +86,11 @@ namespace ReSTCore.Routing
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
             routeCollection.Add(new Route(
+                controllerPath + "/{id}/put",
+                BuildDefaults(RestfulAction.Update, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                new MvcRouteHandler()));
+            routeCollection.Add(new Route(
                 controllerPath + "/{id}/{property}",
                 BuildDefaults(RestfulAction.UpdateProperty, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? RegexPattern.MatchAny }),
@@ -96,6 +101,11 @@ namespace ReSTCore.Routing
                 controllerPath + "/{id}",
                 BuildDefaults(RestfulAction.Delete, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("DELETE"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                new MvcRouteHandler()));
+            routeCollection.Add(new Route(
+                controllerPath + "/{id}/delete",
+                BuildDefaults(RestfulAction.Delete, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? RegexPattern.MatchAny }),
                 new MvcRouteHandler()));
 
             // Index

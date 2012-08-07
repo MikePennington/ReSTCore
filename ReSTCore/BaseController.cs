@@ -357,7 +357,7 @@ namespace ReSTCore
                 Response.SuppressContent = true;
             }
 
-            if(!string.IsNullOrEmpty(errorMessage))
+            if(!string.IsNullOrWhiteSpace(errorMessage))
                 Response.AddHeader("X-GS-ServiceErrorMessage", errorMessage);
 
             if (errorCode != null)
