@@ -14,10 +14,5 @@ namespace TestMvcApp.DTOs
         {
             get { return "Things"; }
         }
-
-        public override bool IsSecureDTO
-        {
-            get { return false; }
-        }
     }
 }

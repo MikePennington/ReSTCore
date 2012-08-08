@@ -18,7 +18,7 @@ namespace TestMvcApp
 
         public static void RegisterRoutes(RouteCollection routes)
         {
-            RestCore.Register();
+            RestCore.Register(string.Empty);
             RestCore.RegisterAllRoutes(RegexPattern.MatchPositiveInteger);
         }
 

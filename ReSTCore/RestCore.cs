@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using System.Web.Routing;
 using ReSTCore.Routing;
 using ReSTCore.ValueProviderFactories;
@@ -7,8 +8,13 @@ namespace ReSTCore
 {
     public static class RestCore
     {
-        public static void Register()
+        public static Uri ServiceBaseUri { get; private set; }
+
+        public static void Register(string serviceBaseUri)
         {
+            if (!string.IsNullOrWhiteSpace(serviceBaseUri))
+                ServiceBaseUri = new Uri(serviceBaseUri);
+
             // Remove MVC header
             MvcHandler.DisableMvcResponseHeader = true;
 
