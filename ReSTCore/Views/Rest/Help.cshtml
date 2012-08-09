@@ -13,6 +13,7 @@ else
     <h2>@Model.ServiceDescription</h2>
     <table>
         <tr>
+            <th>Name</th>
             <th>Path</th>
             <th>Verbs</th>
             <th>Description</th>
@@ -20,6 +21,7 @@ else
         @foreach (var route in Model.Routes)
         {
             <tr>
+                <td nowrap="nowrap">@route.MethodName</td>
                 <td nowrap="nowrap">@route.Path</td>
                 <td nowrap="nowrap">@route.HttpVerb</td>
                 <td>
