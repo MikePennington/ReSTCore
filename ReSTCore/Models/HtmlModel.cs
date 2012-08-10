@@ -14,22 +14,22 @@ namespace ReSTCore.Models
     {
         public ObjectStruct[] htmlObjects;
     }
-    
+
     public struct ObjectStruct
     {
         public string ObjectValue;
         public string ObjectType;
     }
-    
+
     public class HtmlModel
     {
-        public List<TypeStruct> typeObjects;
-        private string ModelName;
-        public string[] htmlTitles;
+        public List<TypeStruct> TypeObjects { get; private set; }
+        private string ModelName { get; set; }
+        public string[] HTMLTitles { get; private set; }
 
         public HtmlModel(object objectToSerialize)
         {
-            typeObjects = new List<TypeStruct>();
+            TypeObjects = new List<TypeStruct>();
             Populate(objectToSerialize);
         }
 
@@ -43,32 +43,26 @@ namespace ReSTCore.Models
             if (objectToSerialize == null)
                 return;
 
-           PropertyInfo countProperty = objectToSerialize.GetType().GetProperty("Count");
-            
+            PropertyInfo countProperty = objectToSerialize.GetType().GetProperty("Count");
+
             if (countProperty != null)
             {
-                    IEnumerable p = (IEnumerable) objectToSerialize;
+                var p = (IEnumerable) objectToSerialize;
+                foreach (object objectIter in p)
+                {
+                    if (HTMLTitles == null)
+                        GetHtmlTitles(objectIter);
 
-                    foreach (object objectIter in p)
-                    {
-                        if (htmlTitles == null)
-                        {
-                            GetHtmlTitles(objectIter);
-                        }
-
-                        GetHtmlObjects(objectIter);
-                    }
+                    GetHtmlObjects(objectIter);
+                }
             }
             else
             {
-                if (htmlTitles == null)
-                {
+                if (HTMLTitles == null)
                     GetHtmlTitles(objectToSerialize);
-                }
 
                 GetHtmlObjects(objectToSerialize);
             }
-
         }
 
         private void GetHtmlObjects(object objectToSerialize)
@@ -86,19 +80,18 @@ namespace ReSTCore.Models
                 newStruct.htmlObjects[i].ObjectType = objectProperties[i].PropertyType.FullName;
             }
 
-            typeObjects.Add(newStruct);
+            TypeObjects.Add(newStruct);
         }
 
         private void GetHtmlTitles(object objectToSerialize)
         {
             PropertyInfo[] objectProperties = objectToSerialize.GetType().GetProperties();
-            htmlTitles = new string[objectProperties.Length];
+            HTMLTitles = new string[objectProperties.Length];
 
             for (int i = 0; i < objectProperties.Length; ++i)
             {
-                htmlTitles[i] = objectProperties[i].Name;
+                HTMLTitles[i] = objectProperties[i].Name;
             }
         }
     }
-
 }

@@ -4,18 +4,31 @@ namespace ReSTCore.ResponseFormatting
 {
     public class ResponseMappingSettings
     {
-        public ResponseFormatType DefaultResponseFormatType { get; set; }
+        public ResponseFormatType DefaultResponseFormatType { get; private set; }
 
-        public List<ResponseTypeMapping> ResponseTypeMappings { get; set; }
+        public List<ResponseTypeMapping> ResponseTypeMappings { get; private set; }
 
-        public static ResponseMappingSettings DefaultSettings
+        private static ResponseMappingSettings _settings;
+
+        public static ResponseMappingSettings Settings
+        {
+            get
+            {
+                if (_settings == null)
+                    _settings = DefaultSettings;
+                return _settings;
+            }
+            set { _settings = value; }
+        }
+
+        private static ResponseMappingSettings DefaultSettings
         {
             get
             {
                 var settings = new ResponseMappingSettings
-                    {
-                        DefaultResponseFormatType = ResponseFormatType.Json,
-                        ResponseTypeMappings = new List<ResponseTypeMapping>
+                {
+                    DefaultResponseFormatType = ResponseFormatType.Json,
+                    ResponseTypeMappings = new List<ResponseTypeMapping>
                             {
                                 new ResponseTypeMapping("text/html", ResponseFormatType.Html),
                                 new ResponseTypeMapping("application/xhtml+xml", ResponseFormatType.Html),
@@ -30,8 +43,7 @@ namespace ReSTCore.ResponseFormatting
                                 new ResponseTypeMapping("text/javascript",  ResponseFormatType.Jsonp),
                                 new ResponseTypeMapping("text/x-javascript", ResponseFormatType.Jsonp)
                             }
-                    };
-
+                };
                 return settings;
             }
         }

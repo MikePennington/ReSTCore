@@ -1,0 +1,44 @@
+﻿@model ReSTCore.Models.HelpModel
+@{
+    ViewBag.Title = "Service Overview";
+    Layout = "~/Views/Rest/Layout.cshtml";
+}
+
+<h3>Services</h3>
+<ul>
+@foreach (var service in Model.Services)
+{
+    <li><a href="@service.Link">@service.Name</a> - @service.Help</li>
+}
+</ul>
+    
+<h3>DTOs</h3>
+<ul>
+@foreach (var dto in Model.Dtos)
+{
+    <li><a href="@dto.Link">@dto.Name</a></li>
+}
+</ul>
+
+<h3>Response Formatting</h3>
+<p>
+    Responses can currently be returned in @Model.ResponseTypes.Count different formats. Responses are controlled by
+    either adding the Accept http header to your request or appending the querystring <i>"format={format}"</i>. You
+    can also specify the response format to be jsonp by adding the querystring paramater <i>"callback={callback}"</i>.
+    If no response type is defined, then the response will be formatted at @Model.DefaultResponseType
+</p>
+<p>Valid accept headers are:</p>
+<ul>
+    @foreach (var responseType in Model.ResponseTypes)
+    {
+        <li>@responseType.Type
+            <ul>
+                @foreach (var accept in responseType.AcceptHeaders)
+                {
+                    <li>@accept</li>
+                }
+            </ul>
+        </li>
+    }
+</ul>
+    

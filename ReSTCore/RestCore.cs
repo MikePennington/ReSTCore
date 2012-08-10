@@ -26,6 +26,12 @@ namespace ReSTCore
         public static void RegisterAllRoutes(string idRegex)
         {
             RestfulRouteHandler.BuildRoutes(RouteTable.Routes, idRegex);
+
+            RouteTable.Routes.MapRoute(
+                "Default", // Route name
+                "{controller}/{action}/{id}", // URL with parameters
+                new {controller = "Help", action = "Index", id = String.Empty} // Parameter defaults
+                );
         }
     }
 }

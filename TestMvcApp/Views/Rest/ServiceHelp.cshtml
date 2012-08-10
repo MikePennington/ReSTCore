@@ -1,0 +1,48 @@
+﻿@model ReSTCore.Models.ServiceHelpModel
+@{
+    Layout = "Layout.cshtml";
+    ViewBag.Title = "Help for " + @Model.ServiceName + " Service";
+}
+
+@if (Model.HelpDisabled)
+{
+    <h2>Help has been disabled for the @Model.ServiceName service.</h2>
+}
+else
+{
+    <h2>@Model.ServiceDescription</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Path</th>
+            <th>Verbs</th>
+            <th>Description</th>
+        </tr>
+        @foreach (var route in Model.Routes)
+        {
+            <tr>
+                <td nowrap="nowrap">@route.MethodName</td>
+                <td nowrap="nowrap">@route.Path</td>
+                <td nowrap="nowrap">@route.HttpVerb</td>
+                <td>
+                    @route.Description
+                    @if (route.Parameters != null && route.Parameters.Count > 0)
+                    {
+                        <table class="parameters">
+                            <tr>
+                                <th colspan="2">Parameters</th>
+                            </tr>
+                            @foreach (var param in route.Parameters)
+                            {
+                                <tr>
+                                    <td>@param.Name</td>
+                                    <td>@param.Description</td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+}

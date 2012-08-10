@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using ReSTCore;
 using ReSTCore.Attributes;
+using ReSTCore.Controllers;
 using ReSTCore.DTO;
 using ReSTCore.Routing;
 using TestMvcApp.DTOs;
@@ -38,6 +39,21 @@ namespace TestMvcApp.Controllers
                                  ResultType = ResultType.Success
                              };
             return HandleResult(RestfulAction.Index, result);
+        }
+
+        [Help("Looks up a thing")]
+        public override ActionResult Show(int id)
+        {
+            Thing thing = null;
+            if(_repo.ContainsKey(id))
+                thing = _repo[id];
+
+            var result = new Result<Thing>
+            {
+                Entity = thing,
+                ResultType = ResultType.Success
+            };
+            return HandleResult(RestfulAction.Show, result);
         }
 
         [Help("Creates a new thing")]

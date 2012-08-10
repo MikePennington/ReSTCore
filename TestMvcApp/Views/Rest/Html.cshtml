@@ -6,7 +6,13 @@
 
 <!DOCTYPE html>
 
-    <h2>@Model.GetModelName()</h2>
+<h2>@Model.GetModelName()</h2>
+@if (Model.HTMLTitles == null || Model.HTMLTitles.Length == 0)
+{
+    <h2>No results to display</h2>
+}
+else
+{
     <table>
         <tr>
             @foreach (var obj in Model.HTMLTitles)
@@ -18,12 +24,12 @@
             @foreach (var obj in Model.TypeObjects)
             {
                 <tr>
-                @foreach (var h in obj.htmlObjects)
-                {
-                    <td>@(h.ObjectValue)</td>   
-                }
+                    @foreach (var h in obj.htmlObjects)
+                    {
+                        <td>@(h.ObjectValue)</td>
+                    }
                 </tr>
             }
-       </tr>
-
+        </tr>
     </table>
+}

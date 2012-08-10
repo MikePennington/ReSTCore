@@ -1,180 +1,121 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Reflection;
 using System.Text;
-using System.Web.Mvc;
-using System.Web.Routing;
 using ReSTCore.Attributes;
+using ReSTCore.Controllers;
+using ReSTCore.DTO;
+using ReSTCore.ResponseFormatting;
 
 namespace ReSTCore.Models
 {
     public class HelpModel
     {
+        public List<ServiceModel> Services { get; private set; }
+        public List<DTO> Dtos { get; private set; }
+        public List<ResponseFormat> ResponseTypes { get; private set; }
+        public string DefaultResponseType { get; private set; }
+
         public HelpModel()
         {
-            Routes = new List<RouteModel>();
-        }
-
-        public HelpModel(Controller controller)
-        {
-            Routes = new List<RouteModel>();
-            Populate(controller);
-        }
-
-        public string ServiceName { get; private set; }
-
-        public string ServiceDescription { get; private set; }
-
-        public bool HelpDisabled { get; private set; }
-
-        public List<RouteModel> Routes { get; private set; }
-
-        private void Populate(Controller controller)
-        {
-            Type controllerType = controller.GetType();
-            foreach (var routeBase in controller.Url.RouteCollection)
+            // Load services
+            var serviceTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
+                .Where(type => IsSubclassOfRawGeneric(typeof (BaseController<,>), type));
+            Services = new List<ServiceModel>();
+            foreach (var type in serviceTypes)
             {
-                if (routeBase.GetType() != typeof (Route))
-                    continue;
+                string name = type.Name;
+                int index = name.IndexOf("Controller", StringComparison.Ordinal);
+                if (index > -1)
+                    name = name.Substring(0, index);
 
-                var route = (Route) routeBase;
+                var helpAttr = (HelpAttribute) Attribute.GetCustomAttribute(type, typeof (HelpAttribute));
+                var helpText = string.Empty;
+                if (helpAttr != null)
+                    helpText = helpAttr.Text;
 
-                object controllerName;
-                if (route.Defaults.TryGetValue("Controller", out controllerName))
-                    ServiceName = controllerName.ToString();
-
-                object action;
-                if (!route.Defaults.TryGetValue("Action", out action))
-                    continue;
-
-                var help = (HelpAttribute) Attribute.GetCustomAttribute(controllerType, typeof (HelpAttribute));
-                if (help != null)
-                {
-                    if (help.Ignore)
-                    {
-                        HelpDisabled = true;
-                        return;
-                    }
-                    ServiceDescription = help.Text;
-                }
-
-                var routeModel = new RouteModel(route, controller, action.ToString());
-                if (!routeModel.Ignore)
-                    Routes.Add(routeModel);
+                Services.Add(new ServiceModel
+                                 {
+                                     Name = name,
+                                     Help = helpText,
+                                     Link = name.ToLower() + "/help"
+                                 });
             }
 
-            Routes.Sort();
+            // Load DTO types
+            var dtoTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
+                .Where(type => IsSubclassOfRawGeneric(typeof (RestEntity<>), type));
+            Dtos = new List<DTO>();
+            foreach (var type in dtoTypes)
+            {
+                Dtos.Add(new DTO
+                             {
+                                 Name = type.Name,
+                                 Link = "dtos/" + type.Name.ToLower()
+                             });
+            }
+
+            // Load response types
+            ResponseTypes = new List<ResponseFormat>();
+            DefaultResponseType = ResponseMappingSettings.Settings.DefaultResponseFormatType.ToString().ToLower();
+            foreach (var responseType in ResponseMappingSettings.Settings.ResponseTypeMappings)
+            {
+                string formatType = responseType.ResponseFormatType.ToString().ToLower();
+                var responseFormat = ResponseTypes.FirstOrDefault(x => x.Type == formatType);
+                if (responseFormat != null)
+                    responseFormat.AcceptHeaders.Add(responseType.MimeType);
+                else
+                {
+                    ResponseTypes.Add(new ResponseFormat
+                                          {
+                                              Type = formatType,
+                                              AcceptHeaders = new List<string> {responseType.MimeType},
+                                              UrlQuery =
+                                                  "format=" + formatType
+                                          });
+                }
+            }
+        }
+
+        private static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
+        {
+            if (generic == null || toCheck == null)
+                return false;
+            if (generic == toCheck)
+                return false;
+
+            while (toCheck != typeof (object))
+            {
+                var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
+                if (generic == cur)
+                {
+                    return true;
+                }
+                toCheck = toCheck.BaseType;
+                if (toCheck == null)
+                    return false;
+            }
+            return false;
         }
     }
 
-    public class RouteModel : IComparable<RouteModel>
-    {
-        internal RouteModel(Route route, Controller controller, string action)
-        {
-            Order = int.MaxValue;
-            Populate(route, controller, action);
-        }
-
-        public string Path { get; private set; }
-
-        public string HttpVerb { get; private set; }
-
-        public string MethodName { get; private set; }
-
-        public string Description { get; private set; }
-
-        public bool Ignore { get; private set; }
-
-        public int Order { get; private set; }
-
-        public List<ParameterModel> Parameters { get; private set; }
-
-        private void Populate(Route route, Controller controller, string action)
-        {
-            Path = "/" + route.Url;
-            Path = Path.Replace("{controller}", controller.RouteData.Values["controller"].ToString());
-
-            // Get help information
-            Type controllerType = controller.GetType();
-            MethodInfo methodInfo = controllerType.GetMethod(action);
-            if (methodInfo != null)
-            {
-                var help = (HelpAttribute) Attribute.GetCustomAttribute(methodInfo, typeof (HelpAttribute), false);
-                if (help != null)
-                {
-                    if (help.Ignore)
-                    {
-                        Ignore = true;
-                        return;
-                    }
-                    Description = help.Text;
-                    Order = help.Order;
-                }
-
-                var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
-                Parameters = new List<ParameterModel>();
-                foreach (var helpParam in helpParams)
-                {
-                    var paramModel = new ParameterModel
-                    {
-                        Name = helpParam.Name,
-                        Description = helpParam.Text,
-                        Order = helpParam.Order
-                    };
-                    Parameters.Add(paramModel);
-                }
-                Parameters.Sort();
-            }
-
-            // Get Http verbs
-            foreach (var constraint in route.Constraints)
-            {
-                if (constraint.Key == "httpMethod" && constraint.Value.GetType() == typeof(HttpMethodConstraint))
-                {
-                    var httpVerbs = new StringBuilder();
-                    foreach (string verb in ((HttpMethodConstraint)constraint.Value).AllowedMethods)
-                    {
-                        if (httpVerbs.Length > 0)
-                            httpVerbs.Append(",");
-                        httpVerbs.Append(verb);
-                    }
-                    HttpVerb = httpVerbs.ToString();
-                }
-            }
-
-            MethodName = action;
-        }
-
-        public int CompareTo(RouteModel other)
-        {
-            int compare = Order.CompareTo(other.Order);
-            if (compare != 0)
-                return compare;
-
-            compare = string.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
-            if (compare != 0)
-                return compare;
-            return string.Compare(HttpVerb, other.HttpVerb, StringComparison.OrdinalIgnoreCase);
-        }
-    }
-
-    public class ParameterModel : IComparable<ParameterModel>
+    public class ServiceModel
     {
         public string Name { get; set; }
+        public string Help { get; set; }
+        public string Link { get; set; }
+    }
 
-        public string Description { get; set; }
+    public class DTO
+    {
+        public string Name { get; set; }
+        public string Link { get; set; }
+    }
 
-        public int Order { get; set; }
-
-        public int CompareTo(ParameterModel other)
-        {
-            int compare = Order.CompareTo(other.Order);
-            if (compare != 0)
-                return compare;
-
-            return string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
-        }
+    public class ResponseFormat
+    {
+        public string Type { get; set; }
+        public List<string> AcceptHeaders { get; set; }
+        public string UrlQuery { get; set; }
     }
 }

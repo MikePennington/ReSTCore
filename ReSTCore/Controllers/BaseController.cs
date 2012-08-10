@@ -15,20 +15,13 @@ using ReSTCore.ResponseFormatting;
 using ReSTCore.Routing;
 using JsonResult = ReSTCore.ActionResults.JsonResult;
 
-namespace ReSTCore
+namespace ReSTCore.Controllers
 {
     /// <typeparam name="TId">The type of the ID of this object controlled by the controller (e.g. 0 int or string)</typeparam>
     /// <typeparam name="TEntity">The type of the object controlled by this controller</typeparam>
     public class BaseController<TId, TEntity> : Controller
         where TEntity : RestEntity<TId>
     {
-        protected ResponseMappingSettings Settings { get; set; }
-
-        public BaseController()
-        {
-            Settings = ResponseMappingSettings.DefaultSettings;
-        }
-
         /// <summary>
         /// Lists objects
         /// Method: GET
@@ -121,8 +114,8 @@ namespace ReSTCore
         [Help("Shows help information for the current controller")]
         public ActionResult Help()
         {
-            var model = new HelpModel(this);
-            return View("~/Views/Rest/Help.cshtml", model);
+            var model = new ServiceHelpModel(this);
+            return View("~/Views/Rest/ServiceHelp.cshtml", model);
         }
 
         protected bool ValidateCreate(RestEntity<TId> entity)
@@ -184,8 +177,8 @@ namespace ReSTCore
             HttpStatusCode httpStatusCode;
             if (result.HttpStatusCode == null)
                 httpStatusCode = result.ResultType == ResultType.ClientError
-                                     ? HttpStatusCode.BadRequest
-                                     : HttpStatusCode.InternalServerError;
+                    ? action == RestfulAction.Show ? HttpStatusCode.NotFound : HttpStatusCode.BadRequest
+                        : HttpStatusCode.InternalServerError;
             else
                 httpStatusCode = result.HttpStatusCode.Value;
             return ErrorResult(httpStatusCode, result.ErrorCode, result.ErrorMessage);
@@ -289,7 +282,7 @@ namespace ReSTCore
         /// <returns></returns>
         private ActionResult DynamicResult(object result)
         {
-            ResponseFormatType bodyFormat = new ResponseFormatDecider(Settings).Decide(HttpContext.Request.AcceptTypes, HttpContext.Request.QueryString);
+            ResponseFormatType bodyFormat = new ResponseFormatDecider(ResponseMappingSettings.Settings).Decide(HttpContext.Request.AcceptTypes, HttpContext.Request.QueryString);
             switch (bodyFormat)
             {
                 case ResponseFormatType.Xml:
