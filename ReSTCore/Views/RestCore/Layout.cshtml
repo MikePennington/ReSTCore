@@ -4,11 +4,6 @@
     <meta charset="utf-8" />
     <title>@ViewBag.Title</title>
     <style>
-        /*----------------------------------------------------------
-        The base color for this template is #5c87b2. If you'd like
-        to use a different color start by replacing all instances of
-        #5c87b2 with your new color.
-        ----------------------------------------------------------*/
         body {
             background-color: #5c87b2;
             font-size: 1em;
@@ -34,11 +29,6 @@
 
         a:active {
             color: #12eb87;
-        }
-
-        p, ul {
-            margin-bottom: 20px;
-            line-height: 1.6em;
         }
 
         header, footer, nav, section {
@@ -72,7 +62,12 @@
             font-size: 1em;
             /*font-weight: normal;*/
             margin-bottom: 1px;
+            margin-top: 20px;
+        }
+
+        p {
             margin-top: 5px;
+            
         }
 
         /* PRIMARY LAYOUT ELEMENTS   
@@ -97,6 +92,12 @@
             -webkit-border-radius: 4px;
             -moz-border-radius: 4px;
         }
+        
+        .back {
+            position: relative;
+            float: right;
+        }
+       
 
         /* TABLE
         ----------------------------------------------------------*/
@@ -134,18 +135,18 @@
         table.parameters td {
             padding: 3px 5px;
             font-size: .9em;
-        }
-        
+        }       
     </style>
 </head>
 <body>
     <div class="page">
         <header>
-            <div id="title">
+            <div>
                 <h1>@ViewBag.Title</h1>
             </div>
         </header>
         <section id="main">
+            <div class="back">@Html.ActionLink("Back to Service Index", "Index", "Help")</div>
             @RenderBody()
         </section>
     </div>

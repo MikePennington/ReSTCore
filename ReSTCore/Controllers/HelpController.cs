@@ -11,8 +11,14 @@ namespace ReSTCore.Controllers
     {
         public ActionResult Index()
         {
-            var verifyModel = new HelpModel();
-            return View("~/Views/Rest/Help.cshtml", verifyModel);
+            var model = new IndexModel();
+            return View("~/Views/RestCore/Index.cshtml", model);
+        }
+
+        public ActionResult DTO(string dtoName)
+        {
+            var model = new DtoModel(dtoName);
+            return View("~/Views/RestCore/Dto.cshtml", model);
         }
     }
 }

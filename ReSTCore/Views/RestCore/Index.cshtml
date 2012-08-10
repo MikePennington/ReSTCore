@@ -1,7 +1,7 @@
-﻿@model ReSTCore.Models.HelpModel
+﻿@model ReSTCore.Models.IndexModel
 @{
+    Layout = "Layout.cshtml";
     ViewBag.Title = "Service Overview";
-    Layout = "~/Views/Rest/Layout.cshtml";
 }
 
 <h3>Services</h3>
@@ -14,10 +14,18 @@
     
 <h3>DTOs</h3>
 <ul>
-@foreach (var dto in Model.Dtos)
-{
-    <li><a href="@dto.Link">@dto.Name</a></li>
-}
+    @foreach (var dto in Model.Dtos)
+    {
+        <li><a href="@dto.Link">@dto.Name</a></li>
+    }
+</ul>
+
+<h3>Error Codes</h3>
+<ul>
+    @foreach (var errorCode in Model.ErrorCodes)
+    {
+        <li>@errorCode.Name (@errorCode.Code)</li>
+    }
 </ul>
 
 <h3>Response Formatting</h3>
@@ -41,4 +49,3 @@
         </li>
     }
 </ul>
-    

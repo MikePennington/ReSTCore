@@ -114,8 +114,8 @@ namespace ReSTCore.Controllers
         [Help("Shows help information for the current controller")]
         public ActionResult Help()
         {
-            var model = new ServiceHelpModel(this);
-            return View("~/Views/Rest/ServiceHelp.cshtml", model);
+            var model = new HelpModel(this);
+            return View("~/Views/RestCore/Help.cshtml", model);
         }
 
         protected bool ValidateCreate(RestEntity<TId> entity)
@@ -293,7 +293,7 @@ namespace ReSTCore.Controllers
                     return new JsonpResult(result);
                 case ResponseFormatType.Html:
                     var model = new HtmlModel(result);
-                    return View("~/Views/Rest/Html.cshtml",model);
+                    return View("~/Views/RestCore/Html.cshtml",model);
                 default:
                     throw new Exception("Unknown response format type");
             }
