@@ -28,16 +28,18 @@ namespace ReSTCore
             RestfulRouteHandler.BuildRoutes(RouteTable.Routes, idRegex);
 
             RouteTable.Routes.MapRoute(
-                "DTO", // Route name
-                "dtos/{dtoName}", // URL with parameters
-                new {controller = "Help", action = "DTO"} // Parameter defaults
+                "HelpIndex",
+                "help",
+                new {controller = "Help", action = "Index"}
                 );
 
             RouteTable.Routes.MapRoute(
-                "Default", // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new {controller = "Help", action = "Index", id = String.Empty} // Parameter defaults
+                "DTO",
+                "dtos/{dtoName}",
+                new {controller = "Help", action = "DTO"}
                 );
+
+            RouteTable.Routes.MapRoute("DefaultPage", "", new {controller = "Help", action = "Index"});
         }
     }
 }
