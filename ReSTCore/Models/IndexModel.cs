@@ -53,7 +53,7 @@ namespace ReSTCore.Models
                 Dtos.Add(new DTO
                              {
                                  Name = type.Name,
-                                 Link = "dtos/" + type.AssemblyQualifiedName
+                                 Link = "help/dtos/" + type.AssemblyQualifiedName
                              });
             }
 
