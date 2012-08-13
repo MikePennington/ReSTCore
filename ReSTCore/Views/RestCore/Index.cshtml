@@ -8,15 +8,15 @@
 <ul>
 @foreach (var service in Model.Services)
 {
-    <li><a href="@service.Link">@service.Name</a> - @service.Help</li>
+    <li>@Html.ActionLink(@service.Name, "Help", @service.Name)</li>
 }
 </ul>
-    
+
 <h3>DTOs</h3>
 <ul>
     @foreach (var dto in Model.Dtos)
     {
-        <li><a href="@dto.Link">@dto.Name</a></li>
+        <li>@Html.ActionLink(@dto.Name, "DTO", "Help", new { dtoName = dto.FullName }, null)</li>
     }
 </ul>
 

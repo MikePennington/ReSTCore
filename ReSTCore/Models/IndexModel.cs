@@ -42,8 +42,7 @@ namespace ReSTCore.Models
                 Services.Add(new ServiceModel
                                  {
                                      Name = name,
-                                     Help = helpText,
-                                     Link = name.ToLower() + "/help"
+                                     Help = helpText
                                  });
             }
 
@@ -56,7 +55,7 @@ namespace ReSTCore.Models
                 Dtos.Add(new DTO
                              {
                                  Name = type.Name,
-                                 Link = "help/dtos/" + type.AssemblyQualifiedName
+                                 FullName = type.AssemblyQualifiedName
                              });
             }
 
@@ -121,13 +120,12 @@ namespace ReSTCore.Models
     {
         public string Name { get; set; }
         public string Help { get; set; }
-        public string Link { get; set; }
     }
 
     public class DTO
     {
         public string Name { get; set; }
-        public string Link { get; set; }
+        public string FullName { get; set; }
     }
 
     public class ResponseFormat
