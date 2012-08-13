@@ -17,9 +17,12 @@ namespace ReSTCore.Models
         public List<ErrorCode> ErrorCodes { get; private set; }
         public List<ResponseFormat> ResponseTypes { get; private set; }
         public string DefaultResponseType { get; private set; }
+        public string ServiceName { get; private set; }
 
         public IndexModel()
         {
+            ServiceName = RestCore.ServiceName;
+
             // Load services
             var serviceTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
                 .Where(type => IsSubclassOfRawGeneric(typeof (BaseController<,>), type));

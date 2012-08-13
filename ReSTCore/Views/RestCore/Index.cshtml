@@ -1,7 +1,7 @@
 ﻿@model ReSTCore.Models.IndexModel
 @{
     Layout = "Layout.cshtml";
-    ViewBag.Title = "Service Overview";
+    ViewBag.Title = Model.ServiceName + " Overview";
 }
 
 <h3>Services</h3>
@@ -20,20 +20,12 @@
     }
 </ul>
 
-<h3>Error Codes</h3>
-<ul>
-    @foreach (var errorCode in Model.ErrorCodes)
-    {
-        <li>@errorCode.Name (@errorCode.Code)</li>
-    }
-</ul>
-
 <h3>Response Formatting</h3>
 <p>
     Responses can currently be returned in @Model.ResponseTypes.Count different formats. Responses are controlled by
     either adding the Accept http header to your request or appending the querystring <i>"format={format}"</i>. You
     can also specify the response format to be jsonp by adding the querystring paramater <i>"callback={callback}"</i>.
-    If no response type is defined, then the response will be formatted at @Model.DefaultResponseType
+    If no response type is defined, then the response will be formatted as @Model.DefaultResponseType.
 </p>
 <p>Valid accept headers are:</p>
 <ul>
@@ -47,5 +39,13 @@
                 }
             </ul>
         </li>
+    }
+</ul>
+
+<h3>Error Codes</h3>
+<ul>
+    @foreach (var errorCode in Model.ErrorCodes)
+    {
+        <li>@errorCode.Name (@errorCode.Code)</li>
     }
 </ul>

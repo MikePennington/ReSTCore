@@ -8,10 +8,13 @@ namespace ReSTCore
 {
     public static class RestCore
     {
+        public static string ServiceName { get; private set; }
         public static Uri ServiceBaseUri { get; private set; }
 
-        public static void Register(string serviceBaseUri)
+        public static void Register(string serviceName, string serviceBaseUri)
         {
+            ServiceName = serviceName;
+
             if (!string.IsNullOrWhiteSpace(serviceBaseUri))
                 ServiceBaseUri = new Uri(serviceBaseUri);
 
