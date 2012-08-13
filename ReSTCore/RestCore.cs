@@ -24,12 +24,8 @@ namespace ReSTCore
             // Register value provider factories
             System.Web.Mvc.ValueProviderFactories.Factories.Add(new JsonValueProviderFactory());
             System.Web.Mvc.ValueProviderFactories.Factories.Add(new XmlValueProviderFactory());
-        }
 
-        public static void RegisterAllRoutes(string idRegex)
-        {
-            RestfulRouteHandler.BuildRoutes(RouteTable.Routes, idRegex);
-
+            // Register help routes
             RouteTable.Routes.MapRoute(
                 "HelpIndex",
                 "help",
@@ -43,6 +39,16 @@ namespace ReSTCore
                 );
 
             RouteTable.Routes.MapRoute("DefaultPage", "", new {controller = "Help", action = "Index"});
+        }
+
+        /// <summary>
+        /// Registers a ReST service by its controller
+        /// </summary>
+        /// <param name="controllerName"></param>
+        /// <param name="idRegex"></param>
+        public static void RegisterService(string controllerName, string idRegex)
+        {
+            RestfulRouteHandler.BuildRoutes(RouteTable.Routes, controllerName, idRegex, controllerName);
         }
     }
 }

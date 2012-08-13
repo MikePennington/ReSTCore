@@ -19,7 +19,7 @@ namespace TestMvcApp
         public static void RegisterRoutes(RouteCollection routes)
         {
             RestCore.Register("Profiles Service", string.Empty);
-            RestCore.RegisterAllRoutes(RegexPattern.MatchPositiveInteger);
+            RestCore.RegisterService("Things", RegexPattern.MatchPositiveInteger);
         }
 
         protected void Application_Start()

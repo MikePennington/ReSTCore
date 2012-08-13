@@ -10,11 +10,11 @@ namespace ReSTCore.Routing
     {
         private IRestfulActionResolver _actionResolver;
 
-        public RestfulRouteHandler()
+        internal RestfulRouteHandler()
         {
         }
 
-        public RestfulRouteHandler(IRestfulActionResolver actionResolver)
+        internal RestfulRouteHandler(IRestfulActionResolver actionResolver)
         {
             _actionResolver = actionResolver;
         }

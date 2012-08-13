@@ -351,10 +351,10 @@ namespace ReSTCore.Controllers
             }
 
             if(!string.IsNullOrWhiteSpace(errorMessage))
-                Response.AddHeader("X-GS-ServiceErrorMessage", errorMessage);
+                Response.AddHeader("X-ServiceErrorMessage", errorMessage);
 
             if (errorCode != null)
-                Response.AddHeader("X-GS-ServiceErrorCode", errorCode.ToString());
+                Response.AddHeader("X-ServiceErrorCode", errorCode.ToString());
         }
 
         protected override void OnException(ExceptionContext filterContext)

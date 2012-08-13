@@ -44,7 +44,7 @@ namespace ReSTCore.Models
                 object controllerName;
                 if (route.Defaults.TryGetValue("Controller", out controllerName))
                     ServiceName = controllerName.ToString();
-                if (route.Url == "dtos/{dtoName}" || route.Url == "{controller}/{action}/{id}")
+                if (string.IsNullOrWhiteSpace(route.Url) || route.Url.StartsWith("dtos") || route.Url.StartsWith("help"))
                     continue;
 
                 object action;
