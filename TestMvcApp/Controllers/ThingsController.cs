@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Web.Mvc;
 using ReSTCore;
@@ -34,10 +35,10 @@ namespace TestMvcApp.Controllers
         {
             var things = _repo.Values.ToList();
             var result = new Result<List<Thing>>
-                             {
-                                 Entity = things,
-                                 ResultType = ResultType.Success
-                             };
+            {
+                Entity = things,
+                ResultType = ResultType.Success
+            };
             return HandleResult(RestfulAction.Index, result);
         }
 
@@ -47,13 +48,7 @@ namespace TestMvcApp.Controllers
             Thing thing = null;
             if(_repo.ContainsKey(id))
                 thing = _repo[id];
-
-            var result = new Result<Thing>
-            {
-                Entity = thing,
-                ResultType = ResultType.Success
-            };
-            return HandleResult(RestfulAction.Show, result);
+            return HandleGetResult(thing);
         }
 
         [Help("Creates a new thing")]
@@ -101,6 +96,28 @@ namespace TestMvcApp.Controllers
             }
 
             return HandleResult(RestfulAction.Update, result);
+        }
+
+        public override ActionResult ShowProperty(int id, string property)
+        {
+            Thing thing = _repo[id];
+            return HandleGetResult(GetProperty(thing, property));
+        }
+
+        public override ActionResult UpdateProperty(int id, string property, string value)
+        {
+            Thing thing = _repo[id];
+
+            bool propertySet = SetProperty(thing, property, value);
+            if (!propertySet)
+                HandleResult(RestfulAction.Update,
+                             new Result<Thing>
+                                 {
+                                     ErrorMessage = string.Format("Could not set {0} on Thing"),
+                                     ResultType = ResultType.ClientError
+                                 });
+
+            return Update(id, thing);
         }
     }
 }

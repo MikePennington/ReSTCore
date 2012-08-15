@@ -79,6 +79,8 @@
     <Compile Include="Routing\RestfulAction.cs" />
     <Compile Include="Routing\RestfulActionResolver.cs" />
     <Compile Include="Routing\RestfulRouteHandler.cs" />
+    <Compile Include="Util\Constants.cs" />
+    <Compile Include="Util\PropertyResult.cs" />
     <Compile Include="Util\UriExtensions.cs" />
     <Compile Include="ValueProviderFactories\XmlValueProviderFactory.cs" />
   </ItemGroup>

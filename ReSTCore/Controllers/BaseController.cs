@@ -13,6 +13,7 @@ using ReSTCore.Mapping;
 using ReSTCore.Models;
 using ReSTCore.ResponseFormatting;
 using ReSTCore.Routing;
+using ReSTCore.Util;
 using JsonResult = ReSTCore.ActionResults.JsonResult;
 
 namespace ReSTCore.Controllers
@@ -88,7 +89,7 @@ namespace ReSTCore.Controllers
         /// Uri:    /[controller]/[id]/[property]
         /// </summary>
         [Help(Ignore = true)]
-        public virtual ActionResult UpdateProperty(TId id, string property, object value)
+        public virtual ActionResult UpdateProperty(TId id, string property, string value)
         {
             SetMethodNotAllowed();
             return null;
@@ -152,7 +153,56 @@ namespace ReSTCore.Controllers
             return ValidateEntity(entity);
         }
 
-        private bool ValidateEntity(RestEntity<TId> entity)
+        protected object GetProperty(object entity, string property)
+        {
+            Type type = entity.GetType();
+            foreach (var propertyInfo in type.GetProperties())
+            {
+                if (!propertyInfo.Name.Equals(property, StringComparison.OrdinalIgnoreCase))
+                    continue;
+                object value = propertyInfo.GetValue(entity, null);
+                return new PropertyResult<object> {{propertyInfo.Name, value}};
+            }
+            return null;
+        }
+
+        protected bool SetProperty(object entity, string property, string value)
+        {
+            Type type = entity.GetType();
+            bool propertyFound = false;
+            foreach (var propertyInfo in type.GetProperties())
+            {
+                if (!propertyInfo.Name.Equals(property, StringComparison.OrdinalIgnoreCase))
+                    continue;
+                propertyFound = true;
+                if (propertyInfo.PropertyType == typeof(string))
+                {
+                    propertyInfo.SetValue(entity, value, null);
+                }
+                else if (propertyInfo.PropertyType == typeof(int))
+                {
+                    int newInt;
+                    if (int.TryParse(value, out newInt))
+                        propertyInfo.SetValue(entity, newInt, null);
+                    else
+                        return false;
+                }
+                else if (propertyInfo.PropertyType == typeof(Guid))
+                {
+                    Guid newGuid;
+                    if (Guid.TryParse(value, out newGuid))
+                        propertyInfo.SetValue(entity, newGuid, null);
+                    else
+                        return false;
+                }
+                else
+                    return false;
+                break;
+            }
+            return propertyFound;
+        }
+
+        private bool ValidateEntity(object entity)
         {
             var results = new List<ValidationResult>();
             var context = new ValidationContext(entity, null, null);
@@ -169,10 +219,23 @@ namespace ReSTCore.Controllers
             return true;
         }
 
-        protected ActionResult HandleResult(RestfulAction action, Result<TEntity> result)
+        protected ActionResult HandleGetResult<T>(T entity, bool map = false) where T : class
+        {
+            Result<T> result;
+            if (entity == null)
+                result = new Result<T> {HttpStatusCode = HttpStatusCode.NotFound, ResultType = ResultType.ClientError};
+            else
+                result = new Result<T> {ResultType = ResultType.Success, Entity = entity};
+            return HandleResult<T>(RestfulAction.Show, result, map);
+        }
+
+        protected ActionResult HandleResult<T>(RestfulAction action, Result<T> result, bool map = false) where T : class
         {
             if (result.ResultType == ResultType.Success)
-                return MapSuccessResult(action, result.Entity);
+                if(map)
+                    return MapSuccessResult(action, result.Entity);
+                else
+                    return SuccessResult(action, result.Entity);
 
             HttpStatusCode httpStatusCode;
             if (result.HttpStatusCode == null)
@@ -184,26 +247,15 @@ namespace ReSTCore.Controllers
             return ErrorResult(httpStatusCode, result.ErrorCode, result.ErrorMessage);
         }
 
-        protected ActionResult HandleResult(RestfulAction action, Result<List<TEntity>> result)
-        {
-            if (result.ResultType == ResultType.Success)
-                return MapSuccessResult(action, result.Entity);
-
-            HttpStatusCode httpStatusCode;
-            if (result.HttpStatusCode == null)
-                httpStatusCode = result.ResultType == ResultType.ClientError
-                                     ? HttpStatusCode.BadRequest
-                                     : HttpStatusCode.InternalServerError;
-            else
-                httpStatusCode = result.HttpStatusCode.Value;
-            return ErrorResult(httpStatusCode, result.ErrorCode, result.ErrorMessage);
-        }
-
         /// <summary> Returns the current ActionResult for the given source objects</summary>
         /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
         /// <param name="dto">The dto to return</param>
-        protected ActionResult SuccessResult(RestfulAction action, TEntity dto)
+        protected ActionResult SuccessResult<T>(RestfulAction action, T dto) where T : class
         {
+            string uri = string.Empty;
+            if (dto != null && dto.GetType().IsInstanceOfType(typeof(RestEntity<TId>)))
+                uri = (dto as RestEntity<TId>).Uri;
+            
             switch(action)
             {
                 case RestfulAction.Show:
@@ -211,11 +263,11 @@ namespace ReSTCore.Controllers
                     return DynamicResult(dto);
                 case RestfulAction.Create:
                     SetResponseStatus(HttpStatusCode.Created);
-                    Response.AddHeader("Content-Location", dto.Uri);
+                    Response.AddHeader("Content-Location", uri);
                     return null;
                 case RestfulAction.Update:
                     SetResponseStatus(HttpStatusCode.Accepted);
-                    Response.AddHeader("Content-Location", dto.Uri);
+                    Response.AddHeader("Content-Location", uri);
                     return null;
                 case RestfulAction.Delete:
                     SetResponseStatus(HttpStatusCode.OK);
@@ -245,7 +297,7 @@ namespace ReSTCore.Controllers
         /// <summary> Returns the current ActionResult for the given source objects</summary>
         /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
         /// <param name="sources">The source objects</param>
-        protected ActionResult MapSuccessResult(RestfulAction action, params object[] sources)
+        private ActionResult MapSuccessResult(RestfulAction action, params object[] sources)
         {
             TEntity dto = null;
             if (sources.Any())
@@ -256,7 +308,7 @@ namespace ReSTCore.Controllers
         /// <summary> Returns the current ActionResult for the given source objects</summary>
         /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
         /// <param name="sources">The source objects</param>
-        protected ActionResult MapSuccessResult(RestfulAction action, IEnumerable<object> sources)
+        private ActionResult MapSuccessResult(RestfulAction action, IEnumerable<object> sources)
         {
             var dtos = Mapper.Map<List<TEntity>>(sources);
             return SuccessResult(action, dtos);

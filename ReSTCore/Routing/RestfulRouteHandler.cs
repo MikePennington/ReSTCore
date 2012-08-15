@@ -2,6 +2,7 @@
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using ReSTCore.Util;
 
 namespace ReSTCore.Routing
 {
@@ -60,65 +61,67 @@ namespace ReSTCore.Routing
         {
             controllerPath = FixPath(controllerPath);
 
+            idValidationRegex = string.IsNullOrWhiteSpace(idValidationRegex) ? RegexPattern.MatchAny : idValidationRegex;
+
             // Help
             routeCollection.Add(new Route(
                 controllerPath + "/help",
-                BuildDefaults(RestfulAction.Help, controller),
+                BuildDefaults(Constants.Actions.Show, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET") }),
                 new MvcRouteHandler()));
 
             // Show
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
-                BuildDefaults(RestfulAction.Show, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                BuildDefaults(Constants.Actions.Show, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex }),
                 new MvcRouteHandler()));
             routeCollection.Add(new Route(
                 controllerPath + "/{id}/{property}",
-                BuildDefaults(RestfulAction.ShowProperty, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                BuildDefaults(Constants.Actions.ShowProperty, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex }),
                 new MvcRouteHandler()));
 
             // Update
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
-                BuildDefaults(RestfulAction.Update, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                BuildDefaults(Constants.Actions.Update, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex }),
                 new MvcRouteHandler()));
             routeCollection.Add(new Route(
                 controllerPath + "/{id}/put",
-                BuildDefaults(RestfulAction.Update, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                BuildDefaults(Constants.Actions.Update, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST"), id = idValidationRegex }),
                 new MvcRouteHandler()));
             routeCollection.Add(new Route(
-                controllerPath + "/{id}/{property}",
-                BuildDefaults(RestfulAction.UpdateProperty, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                controllerPath + "/{id}/{property}/{value}",
+                BuildDefaults(Constants.Actions.UpdateProperty, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex }),
                 new MvcRouteHandler()));
 
             // Delete
             routeCollection.Add(new Route(
                 controllerPath + "/{id}",
-                BuildDefaults(RestfulAction.Delete, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("DELETE"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                BuildDefaults(Constants.Actions.Delete, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("DELETE"), id = idValidationRegex }),
                 new MvcRouteHandler()));
             routeCollection.Add(new Route(
                 controllerPath + "/{id}/delete",
-                BuildDefaults(RestfulAction.Delete, controller),
-                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex ?? RegexPattern.MatchAny }),
+                BuildDefaults(Constants.Actions.Delete, controller),
+                new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET"), id = idValidationRegex }),
                 new MvcRouteHandler()));
 
             // Index
             routeCollection.Add(new Route(
                 controllerPath,
-                BuildDefaults(RestfulAction.Index, controller),
+                BuildDefaults(Constants.Actions.Index, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET") }),
                 new MvcRouteHandler()));
 
             // Create
             routeCollection.Add(new Route(
                 controllerPath,
-                BuildDefaults(RestfulAction.Create, controller),
+                BuildDefaults(Constants.Actions.Create, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST") }),
                 new MvcRouteHandler()));
         }
@@ -148,17 +151,17 @@ namespace ReSTCore.Routing
         }
 
         /// <summary>Builds a Default object for a route.</summary>
-        /// <param name="restfulAction">The default action for the route.</param>
+        /// <param name="action">The default action for the route.</param>
         /// <param name="controllerName">The default controller for the route.</param>
         /// <returns>An Anonymous Type with a default Action property and and default Controller property
         /// if <paramref name="controllerName"/> is not null or empty.</returns>
-        private static RouteValueDictionary BuildDefaults(RestfulAction restfulAction, string controllerName)
+        private static RouteValueDictionary BuildDefaults(string action, string controllerName)
         {
             if (string.IsNullOrEmpty(controllerName))
-                return new RouteValueDictionary(new { Action = restfulAction == RestfulAction.None ? string.Empty : restfulAction.ToString() });
+                return new RouteValueDictionary(new { Action = action });
 
             return
-                new RouteValueDictionary(new { Action = restfulAction == RestfulAction.None ? string.Empty : restfulAction.ToString(), Controller = controllerName });
+                new RouteValueDictionary(new { Action = action, Controller = controllerName });
         }
 
         /// <summary>Ensures that a <see cref="IRestfulActionResolver"/> exists.</summary>
