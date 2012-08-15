@@ -66,7 +66,7 @@ namespace ReSTCore.Routing
             // Help
             routeCollection.Add(new Route(
                 controllerPath + "/help",
-                BuildDefaults(Constants.Actions.Show, controller),
+                BuildDefaults(Constants.Actions.Help, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("GET") }),
                 new MvcRouteHandler()));
 

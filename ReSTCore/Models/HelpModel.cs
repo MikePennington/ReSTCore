@@ -12,11 +12,6 @@ namespace ReSTCore.Models
 {
     public class HelpModel
     {
-        public HelpModel()
-        {
-            Routes = new List<RouteModel>();
-        }
-
         public HelpModel(Controller controller)
         {
             Routes = new List<RouteModel>();

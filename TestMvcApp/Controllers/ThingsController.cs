@@ -98,12 +98,14 @@ namespace TestMvcApp.Controllers
             return HandleResult(RestfulAction.Update, result);
         }
 
+        [Help("Returns a specific property of a Thing")]
         public override ActionResult ShowProperty(int id, string property)
         {
             Thing thing = _repo[id];
             return HandleGetResult(GetProperty(thing, property));
         }
 
+        [Help("Updates a specific property of a Thing")]
         public override ActionResult UpdateProperty(int id, string property, string value)
         {
             Thing thing = _repo[id];
