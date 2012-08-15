@@ -253,7 +253,7 @@ namespace ReSTCore.Controllers
         protected ActionResult SuccessResult<T>(RestfulAction action, T dto) where T : class
         {
             string uri = string.Empty;
-            if (dto != null && dto.GetType().IsInstanceOfType(typeof(RestEntity<TId>)))
+            if (dto != null && dto.GetType().IsSubclassOf(typeof(RestEntity<TId>)))
                 uri = (dto as RestEntity<TId>).Uri;
             
             switch(action)
