@@ -258,6 +258,7 @@ namespace ReSTCore.Controllers
             
             switch(action)
             {
+                case RestfulAction.Index:
                 case RestfulAction.Show:
                     SetResponseStatus(HttpStatusCode.OK);
                     return DynamicResult(dto);
@@ -272,22 +273,6 @@ namespace ReSTCore.Controllers
                 case RestfulAction.Delete:
                     SetResponseStatus(HttpStatusCode.OK);
                     return null;
-                default:
-                    SetResponseStatus(HttpStatusCode.BadRequest, "Unknown action");
-                    return null;
-            }
-        }
-
-        /// <summary> Returns the current ActionResult for the given source objects</summary>
-        /// <param name="action">The Restful action type (create, show, update, delete, index)</param>
-        /// <param name="dtos">The list of dtos to return</param>
-        protected ActionResult SuccessResult(RestfulAction action, IEnumerable<TEntity> dtos)
-        {
-            switch (action)
-            {
-                case RestfulAction.Index:
-                    SetResponseStatus(HttpStatusCode.OK);
-                    return DynamicResult(dtos);
                 default:
                     SetResponseStatus(HttpStatusCode.BadRequest, "Unknown action");
                     return null;
