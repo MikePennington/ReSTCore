@@ -4,9 +4,9 @@ namespace ReSTCore.ResponseFormatting
 {
     public class ResponseMappingSettings
     {
-        public ResponseFormatType DefaultResponseFormatType { get; private set; }
+        public ResponseFormatType DefaultResponseFormatType { get; set; }
 
-        public List<ResponseTypeMapping> ResponseTypeMappings { get; private set; }
+        public List<ResponseTypeMapping> ResponseTypeMappings { get; set; }
 
         private static ResponseMappingSettings _settings;
 
