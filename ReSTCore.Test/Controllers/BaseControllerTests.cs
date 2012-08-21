@@ -44,8 +44,6 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
-            Console.WriteLine("This is a test");
-            System.Threading.Thread.Sleep(1000);
             result.ShouldBeType<ActionResults.JsonResult>();
         }
 
@@ -56,8 +54,6 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
-            Console.WriteLine("This is a test");
-            System.Threading.Thread.Sleep(1000);
             result.ShouldBeType<ActionResults.JsonpResult>();
         }
 
