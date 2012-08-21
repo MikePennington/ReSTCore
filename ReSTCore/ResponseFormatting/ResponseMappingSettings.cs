@@ -21,6 +21,11 @@ namespace ReSTCore.ResponseFormatting
             set { _settings = value; }
         }
 
+        public static void ResetToDefaultSettings()
+        {
+            Settings = DefaultSettings;
+        }
+
         private static ResponseMappingSettings DefaultSettings
         {
             get

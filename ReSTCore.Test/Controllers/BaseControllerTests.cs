@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -33,6 +34,7 @@ namespace ReSTCore.Test.Controllers
         public void TestCleanup()
         {
             _controller = null;
+            ResponseMappingSettings.ResetToDefaultSettings();
         }
 
         [TestMethod]
@@ -42,23 +44,27 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
+            Console.WriteLine("This is a test");
+            System.Threading.Thread.Sleep(1000);
             result.ShouldBeType<ActionResults.JsonResult>();
         }
 
         [TestMethod]
         public void JsonpAcceptTypeShouldReturnJsonp()
         {
-            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { "text/javascript" }).Build(); ;
+            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { "text/javascript" }).Build();
 
             ActionResult result = _controller.Index();
 
+            Console.WriteLine("This is a test");
+            System.Threading.Thread.Sleep(1000);
             result.ShouldBeType<ActionResults.JsonpResult>();
         }
 
         [TestMethod]
         public void XmlAcceptTypeShouldReturnXml()
         {
-            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { "text/xml" }).Build(); ;
+            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { "text/xml" }).Build();
 
             ActionResult result = _controller.Index();
 
@@ -68,7 +74,7 @@ namespace ReSTCore.Test.Controllers
         [TestMethod]
         public void HtmlAcceptTypeShouldReturnHtml()
         {
-            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { "text/html" }).Build(); ;
+            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { "text/html" }).Build();
 
             ActionResult result = _controller.Index();
 
@@ -79,7 +85,7 @@ namespace ReSTCore.Test.Controllers
         public void SettingCustomMimeTypeMappingShouldReturnCorrectly()
         {
             const string acceptType = "custom";
-            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { acceptType }).Build(); ;
+            _controller = TestControllerBuilder.TestController().WithAcceptTypes(new[] { acceptType }).Build();
             ResponseMappingSettings.Settings = new ResponseMappingSettings
                     {
                         ResponseTypeMappings = new List<ResponseTypeMapping>
@@ -97,11 +103,11 @@ namespace ReSTCore.Test.Controllers
         public void MultipleAcceptTypesShouldTakeFirstMatching()
         {
             _controller = TestControllerBuilder.TestController()
-                .WithAcceptTypes(new[] { "text/unknown", "text/javascript", "text/html" }).Build(); ;
+                .WithAcceptTypes(new[] { "text/unknown", "text/javascript", "text/html" }).Build();
 
             ActionResult result = _controller.Index();
 
-            result.ShouldBeType<ViewResult>();
+            result.ShouldBeType<ActionResults.JsonpResult>();
         }
     }
 }
