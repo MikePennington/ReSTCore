@@ -2,6 +2,7 @@
 <package >
   <metadata>
     <id>ReSTCore</id>
+    <version>1</version><!-- Version set in Jenkins -->
     <title>ReSTCore</title>
     <authors>Mike Pennington</authors>
     <owners>Impulse DEV</owners>
