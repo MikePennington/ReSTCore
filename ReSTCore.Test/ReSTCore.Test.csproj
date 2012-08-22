@@ -55,6 +55,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResults\JsonpResultTests.cs" />
+    <Compile Include="ActionResults\JsonResultTests.cs" />
+    <Compile Include="ActionResults\XmlResultTests.cs" />
     <Compile Include="Controllers\BaseControllerTests.cs" />
     <Compile Include="Fixtures\IBuilder.cs" />
     <Compile Include="Fixtures\TestController.cs" />
@@ -64,16 +67,16 @@
     <Compile Include="Routing\RestfulRouteHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ReSTCore\ReSTCore.csproj">
-      <Project>{CF9485BA-74FD-4174-9D12-E216316C5D2A}</Project>
-      <Name>ReSTCore</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ReSTCore\ReSTCore.csproj">
+      <Project>{CF9485BA-74FD-4174-9D12-E216316C5D2A}</Project>
+      <Name>ReSTCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

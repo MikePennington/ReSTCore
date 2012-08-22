@@ -28,16 +28,16 @@ namespace ReSTCore.ActionResults
             if (ContentEncoding != null)
                 response.ContentEncoding = ContentEncoding;
 
+            if (Data == null)
+                return;
+
             if (Data.GetType() == typeof(StringDTO))
                 Data = new {value = ((StringDTO) Data).Value};
 
-            if (Data != null)
-            {
-                var serializerSettings = new JsonSerializerSettings();
-                serializerSettings.Converters.Add(new IsoDateTimeConverter());
-                var serializedObject = JsonConvert.SerializeObject(Data, Formatting.None, serializerSettings);
-                response.Write(serializedObject);
-            }
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.Converters.Add(new IsoDateTimeConverter());
+            var serializedObject = JsonConvert.SerializeObject(Data, Formatting.None, serializerSettings);
+            response.Write(serializedObject);
         }
     }
 }

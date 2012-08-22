@@ -9,13 +9,9 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using ReSTCore.Models;
 using ReSTCore.ResponseFormatting;
 using ReSTCore.Test.Fixtures;
 using Should;
-using ReSTCore.Controllers;
-using ReSTCore.DTO;
-using ReSTCore.Routing;
 
 namespace ReSTCore.Test.Controllers
 {
@@ -44,7 +40,7 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
-            result.ShouldBeType<ActionResults.JsonResult>();
+            result.ShouldBeType<ReSTCore.ActionResults.JsonResult>();
         }
 
         [TestMethod]
@@ -54,7 +50,7 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
-            result.ShouldBeType<ActionResults.JsonpResult>();
+            result.ShouldBeType<ReSTCore.ActionResults.JsonpResult>();
         }
 
         [TestMethod]
@@ -64,7 +60,7 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
-            result.ShouldBeType<ActionResults.XmlResult>();
+            result.ShouldBeType<ReSTCore.ActionResults.XmlResult>();
         }
 
         [TestMethod]
@@ -92,7 +88,7 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
-            result.ShouldBeType<ActionResults.JsonpResult>();
+            result.ShouldBeType<ReSTCore.ActionResults.JsonpResult>();
         }
 
         [TestMethod]
@@ -103,7 +99,7 @@ namespace ReSTCore.Test.Controllers
 
             ActionResult result = _controller.Index();
 
-            result.ShouldBeType<ActionResults.JsonpResult>();
+            result.ShouldBeType<ReSTCore.ActionResults.JsonpResult>();
         }
     }
 }

@@ -25,6 +25,9 @@ namespace ReSTCore.ActionResults
             if (ContentEncoding != null)
                 response.ContentEncoding = ContentEncoding;
 
+            if (Data == null)
+                return;
+
             string callback = context.HttpContext.Request.QueryString["callback"];
             if (string.IsNullOrWhiteSpace(callback))
                 callback = "callback";
@@ -32,13 +35,10 @@ namespace ReSTCore.ActionResults
             if (Data.GetType() == typeof(StringDTO))
                 Data = new { value = ((StringDTO)Data).Value };
 
-            if (Data != null)
-            {
-                var serializerSettings = new JsonSerializerSettings();
-                serializerSettings.Converters.Add(new IsoDateTimeConverter());
-                var serializedObject = JsonConvert.SerializeObject(Data, Formatting.None, serializerSettings);
-                response.Write(callback + "(" + serializedObject + ");");
-            }
+            var serializerSettings = new JsonSerializerSettings();
+            serializerSettings.Converters.Add(new IsoDateTimeConverter());
+            var serializedObject = JsonConvert.SerializeObject(Data, Formatting.None, serializerSettings);
+            response.Write(callback + "(" + serializedObject + ");");
         }
     }
 }
