@@ -6,7 +6,7 @@ using ReSTCore.DTO;
 
 namespace ReSTCore.Test.Fixtures
 {
-    public class TestEntity : RestEntity<int>
+    public class TestDTO : RestDTO<int>
     {
         public string Name { get; set; }
 

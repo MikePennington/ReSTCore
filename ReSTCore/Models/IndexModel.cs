@@ -48,7 +48,7 @@ namespace ReSTCore.Models
 
             // Load DTO types
             var dtoTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
-                .Where(type => IsSubclassOfRawGeneric(typeof (RestEntity<>), type));
+                .Where(type => IsSubclassOfRawGeneric(typeof (RestDTO<>), type));
             Dtos = new List<DTO>();
             foreach (var type in dtoTypes)
             {

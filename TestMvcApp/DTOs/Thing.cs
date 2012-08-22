@@ -6,7 +6,7 @@ using ReSTCore.DTO;
 
 namespace TestMvcApp.DTOs
 {
-    public class Thing : RestEntity<int>
+    public class Thing : RestDTO<int>
     {
         public string Name { get; set; }
 

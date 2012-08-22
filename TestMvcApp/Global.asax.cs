@@ -18,8 +18,24 @@ namespace TestMvcApp
 
         public static void RegisterRoutes(RouteCollection routes)
         {
+            // Put custom routes first
+            routes.MapRoute(
+                "GetSomething",
+                "simple/getsomething",
+                new {controller = "Simple", action = "GetSomething"},
+                new {httpMethod = new HttpMethodConstraint("GET")}
+                );
+
+            routes.MapRoute(
+                "DoSomething",
+                "simple/dosomething",
+                new {controller = "Simple", action = "DoSomething"},
+                new {httpMethod = new HttpMethodConstraint("POST")}
+                );
+
             RestCore.Register("Profiles Service", string.Empty);
             RestCore.RegisterService("Things", RegexPattern.MatchPositiveInteger);
+            RestCore.RegisterService("Simple", RegexPattern.MatchAny);
         }
 
         protected void Application_Start()

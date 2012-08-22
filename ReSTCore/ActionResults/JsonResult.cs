@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using ReSTCore.DTO;
 
 namespace ReSTCore.ActionResults
 {
@@ -26,6 +27,9 @@ namespace ReSTCore.ActionResults
             response.ContentType = "application/json";
             if (ContentEncoding != null)
                 response.ContentEncoding = ContentEncoding;
+
+            if (Data.GetType() == typeof(StringDTO))
+                Data = new {value = ((StringDTO) Data).Value};
 
             if (Data != null)
             {
