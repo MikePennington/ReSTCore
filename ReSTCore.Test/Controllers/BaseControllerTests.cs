@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using ReSTCore.Controllers;
+using ReSTCore.DTO;
 using ReSTCore.ResponseFormatting;
 using ReSTCore.Test.Fixtures;
 using Should;

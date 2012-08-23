@@ -160,6 +160,9 @@ namespace ReSTCore.Controllers
         /// <returns></returns>
         protected object GetProperty(object entity, string property)
         {
+            if (entity == null || string.IsNullOrWhiteSpace(property))
+                return null;
+
             Type type = entity.GetType();
             foreach (var propertyInfo in type.GetProperties())
             {
@@ -180,6 +183,9 @@ namespace ReSTCore.Controllers
         /// <returns></returns>
         protected bool SetProperty(object entity, string property, string value)
         {
+            if (entity == null || string.IsNullOrWhiteSpace(property))
+                return false;
+
             Type type = entity.GetType();
             bool propertyFound = false;
             foreach (var propertyInfo in type.GetProperties())
