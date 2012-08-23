@@ -18,5 +18,11 @@ namespace ReSTCore.Util
             public const string Delete = "Delete";
             public const string Help = "Help";
         }
+
+        public static class Headers
+        {
+            public const string ErrorCode = "X-ServiceErrorCode";
+            public const string ErrorMessage = "X-ServiceErrorMessage";
+        }
     }
 }

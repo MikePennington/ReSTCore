@@ -14,15 +14,20 @@ namespace ReSTCore.Test.Fixtures
         public override ActionResult Index()
         {
             var result = new Result<List<TestDTO>>
-            {
-                Entity = new List<TestDTO>
-                                                  {
-                                                      new TestDTO {Name = "Test 1"},
-                                                      new TestDTO {Name = "Test 2"}
-                                                  },
-                ResultType = ResultType.Success
-            };
+                             {
+                                 Entity = new List<TestDTO>
+                                              {
+                                                  new TestDTO {Name = "Test 1"},
+                                                  new TestDTO {Name = "Test 2"}
+                                              },
+                                 ResultType = ResultType.Success
+                             };
             return HandleResult(RestfulAction.Index, result);
+        }
+
+        public ActionResult ThrowException(string errorMessage)
+        {
+            throw new Exception(errorMessage);
         }
     }
 }

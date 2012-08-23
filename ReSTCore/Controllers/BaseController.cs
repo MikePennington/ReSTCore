@@ -403,16 +403,17 @@ namespace ReSTCore.Controllers
             }
 
             if(!string.IsNullOrWhiteSpace(errorMessage))
-                Response.AddHeader("X-ServiceErrorMessage", errorMessage);
+                Response.AddHeader(Constants.Headers.ErrorMessage, errorMessage);
 
             if (errorCode != null)
-                Response.AddHeader("X-ServiceErrorCode", errorCode.ToString());
+                Response.AddHeader(Constants.Headers.ErrorCode, errorCode.ToString());
         }
 
         protected override void OnException(ExceptionContext filterContext)
         {
             SetResponseStatus(HttpStatusCode.InternalServerError, filterContext.Exception.Message);
             filterContext.Result = null;
+            filterContext.ExceptionHandled = true;
         }
     }
 }
