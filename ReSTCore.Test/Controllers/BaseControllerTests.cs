@@ -26,6 +26,7 @@ namespace ReSTCore.Test.Controllers
         [TestInitialize]
         public void TestInitialize()
         {
+            RestCore.Configuration = new Configuration();
         }
 
         [TestCleanup]
@@ -33,7 +34,6 @@ namespace ReSTCore.Test.Controllers
         {
             _controller = null;
             ResponseMappingSettings.ResetToDefaultSettings();
-            RestCore.Configuration = new Configuration();
         }
 
         [TestMethod]
