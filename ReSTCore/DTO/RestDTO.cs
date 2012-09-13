@@ -26,7 +26,7 @@ namespace ReSTCore.DTO
 
                 if (Path != null)
                 {
-                    if (RestCore.Configuration.ServiceBaseUri != null)
+                    if (RestCore.Configuration != null && RestCore.Configuration.ServiceBaseUri != null)
                     {
                         Uri = RestCore.Configuration.ServiceBaseUri.Combine(Path).CombineUri(HttpUtility.UrlEncode(Id.ToString()));
                     }

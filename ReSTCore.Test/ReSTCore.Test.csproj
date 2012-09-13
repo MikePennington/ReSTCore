@@ -59,6 +59,7 @@
     <Compile Include="ActionResults\JsonResultTests.cs" />
     <Compile Include="ActionResults\XmlResultTests.cs" />
     <Compile Include="Controllers\BaseControllerTests.cs" />
+    <Compile Include="DTO\RestDTOTests.cs" />
     <Compile Include="Fixtures\IBuilder.cs" />
     <Compile Include="Fixtures\TestController.cs" />
     <Compile Include="Fixtures\TestControllerBuilder.cs" />
