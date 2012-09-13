@@ -8,15 +8,11 @@ namespace ReSTCore
 {
     public static class RestCore
     {
-        public static string ServiceName { get; private set; }
-        public static Uri ServiceBaseUri { get; private set; }
+        public static Configuration Configuration { get; set; }
 
-        public static void Register(string serviceName, string serviceBaseUri)
+        public static void Register(Configuration configuration)
         {
-            ServiceName = serviceName;
-
-            if (!string.IsNullOrWhiteSpace(serviceBaseUri))
-                ServiceBaseUri = new Uri(serviceBaseUri);
+            Configuration = configuration;
 
             // Remove MVC header
             MvcHandler.DisableMvcResponseHeader = true;
@@ -46,7 +42,7 @@ namespace ReSTCore
         /// </summary>
         /// <param name="controllerName"></param>
         /// <param name="idRegex"></param>
-        public static void RegisterService(string controllerName, string idRegex)
+        public static void RegisterController(string controllerName, string idRegex)
         {
             RestfulRouteHandler.BuildRoutes(RouteTable.Routes, controllerName, idRegex, controllerName);
         }

@@ -22,11 +22,11 @@ namespace TestMvcApp.Controllers
             if (_repo == null)
             {
                 _repo = new Dictionary<int, Thing>
-                           {
-                               {1, new Thing {Id = 1, Name = "Thing 1"}},
-                               {2, new Thing {Id = 2, Name = "Thing 2"}},
-                               {3, new Thing {Id = 3, Name = "Thing 3"}}
-                           };
+                            {
+                                {1, new Thing {Id = 1, Name = "Thing 1"}},
+                                {2, new Thing {Id = 2, Name = "Thing 2"}},
+                                {3, new Thing {Id = 3, Name = "Thing 3"}}
+                            };
             }
         }
 

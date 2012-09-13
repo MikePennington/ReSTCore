@@ -21,7 +21,7 @@ namespace ReSTCore.Models
 
         public IndexModel()
         {
-            ServiceName = RestCore.ServiceName;
+            ServiceName = RestCore.Configuration.ServiceName;
 
             // Load services
             var serviceTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())

@@ -415,11 +415,14 @@ namespace ReSTCore.Controllers
                 Response.AddHeader(Constants.Headers.ErrorCode, errorCode.ToString());
         }
 
-        protected override void OnException(ExceptionContext filterContext)
+        protected override void OnException(ExceptionContext exceptionContext)
         {
-            SetResponseStatus(HttpStatusCode.InternalServerError, filterContext.Exception.Message);
-            filterContext.Result = null;
-            filterContext.ExceptionHandled = true;
+            if(RestCore.Configuration.HideRealException)
+                SetResponseStatus(HttpStatusCode.InternalServerError, RestCore.Configuration.DefaultExceptionText);
+            else
+                SetResponseStatus(HttpStatusCode.InternalServerError, exceptionContext.Exception.Message);
+            exceptionContext.Result = null;
+            exceptionContext.ExceptionHandled = true;
         }
     }
 }

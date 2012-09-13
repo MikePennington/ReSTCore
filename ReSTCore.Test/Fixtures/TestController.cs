@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
@@ -11,6 +12,8 @@ namespace ReSTCore.Test.Fixtures
 {
     public class TestController : BaseController<int, TestDTO>
     {
+        public NameValueCollection Headers { get; set; }
+
         public override ActionResult Index()
         {
             var result = new Result<List<TestDTO>>
@@ -25,9 +28,9 @@ namespace ReSTCore.Test.Fixtures
             return HandleResult(RestfulAction.Index, result);
         }
 
-        public ActionResult ThrowException(string errorMessage)
+        public void ThrowException(ExceptionContext context)
         {
-            throw new Exception(errorMessage);
+            OnException(context);
         }
     }
 }

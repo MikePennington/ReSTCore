@@ -13,6 +13,7 @@ using ReSTCore.Controllers;
 using ReSTCore.DTO;
 using ReSTCore.ResponseFormatting;
 using ReSTCore.Test.Fixtures;
+using ReSTCore.Util;
 using Should;
 
 namespace ReSTCore.Test.Controllers
@@ -25,7 +26,6 @@ namespace ReSTCore.Test.Controllers
         [TestInitialize]
         public void TestInitialize()
         {
-
         }
 
         [TestCleanup]
@@ -33,6 +33,7 @@ namespace ReSTCore.Test.Controllers
         {
             _controller = null;
             ResponseMappingSettings.ResetToDefaultSettings();
+            RestCore.Configuration = new Configuration();
         }
 
         [TestMethod]
@@ -102,6 +103,34 @@ namespace ReSTCore.Test.Controllers
             ActionResult result = _controller.Index();
 
             result.ShouldBeType<ReSTCore.ActionResults.JsonpResult>();
+        }
+
+        [TestMethod]
+        public void ExceptionShouldBeWrittenToHeader()
+        {
+            const string error = "oh my, an exception!";
+
+            _controller = TestControllerBuilder.TestController().Build();
+
+            var context = new ExceptionContext { Exception = new Exception(error) };
+            _controller.ThrowException(context);
+
+            _controller.Headers.Get(Constants.Headers.ErrorMessage).ShouldEqual(error);
+        }
+
+        [TestMethod]
+        public void ExceptionShouldBeWrittenToHeaderIfRealExceptionsAreTurnedOff()
+        {
+            const string realError = "real error";
+            const string shownError = "shown error";
+
+            _controller = TestControllerBuilder.TestController().Build();
+            RestCore.Configuration = new Configuration {HideRealException = true, DefaultExceptionText = shownError};
+
+            var context = new ExceptionContext { Exception = new Exception(realError) };
+            _controller.ThrowException(context);
+
+            _controller.Headers.Get(Constants.Headers.ErrorMessage).ShouldEqual(shownError);
         }
     }
 }

@@ -33,9 +33,10 @@ namespace TestMvcApp
                 new {httpMethod = new HttpMethodConstraint("POST")}
                 );
 
-            RestCore.Register("Profiles Service", string.Empty);
-            RestCore.RegisterService("Things", RegexPattern.MatchPositiveInteger);
-            RestCore.RegisterService("Simple", RegexPattern.MatchAny);
+            var config = new Configuration {ServiceName = "Profiles Service"};
+            RestCore.Register(config);
+            RestCore.RegisterController("Things", RegexPattern.MatchPositiveInteger);
+            RestCore.RegisterController("Simple", RegexPattern.MatchAny);
         }
 
         protected void Application_Start()

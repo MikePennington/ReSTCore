@@ -21,7 +21,10 @@ namespace ReSTCore.Test.Fixtures
             _request.Setup(x => x.AcceptTypes).Returns(new string[]{});
             _request.Setup(x => x.QueryString).Returns(new NameValueCollection());
 
+            var headers = new NameValueCollection();
             _response = new Mock<HttpResponseBase>();
+            _response.Setup(x => x.AddHeader(It.IsAny<string>(), It.IsAny<string>()))
+                .Callback<string, string>(headers.Add);
 
             var httpContext = new Mock<HttpContextBase>();
             httpContext.Setup(x => x.Request).Returns(_request.Object);
@@ -32,6 +35,7 @@ namespace ReSTCore.Test.Fixtures
 
             _controller = new TestController();
             _controller.ControllerContext = controllerContext;
+            _controller.Headers = headers;
         }
 
         public static TestControllerBuilder TestController()
