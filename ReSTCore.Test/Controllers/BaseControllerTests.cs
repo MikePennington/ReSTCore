@@ -132,5 +132,33 @@ namespace ReSTCore.Test.Controllers
 
             _controller.Headers.Get(Constants.Headers.ErrorMessage).ShouldEqual(shownError);
         }
+
+        [TestMethod]
+        public void UnknownServerErrorCodeShouldBeWrittenToHeaderIfSet()
+        {
+            const int unknownServerErrorCode = 14;
+
+            _controller = TestControllerBuilder.TestController().Build();
+            RestCore.Configuration = new Configuration { UnknownServerErrorCode = unknownServerErrorCode };
+
+            var context = new ExceptionContext { Exception = new Exception("error") };
+            _controller.ThrowException(context);
+
+            _controller.Headers.Get(Constants.Headers.ErrorCode).ShouldEqual(unknownServerErrorCode.ToString());
+        }
+
+        [TestMethod]
+        public void ValicationErrorCodeShouldSetInvalidUserInputErrorCode()
+        {
+            const int invalidUserIntputErrorCode = 15;
+            RestCore.Configuration = new Configuration { InvalidUserIntputErrorCode = invalidUserIntputErrorCode };
+            var testDTO = new TestDTO { Name = "1234567890123456789012345678901234567890" };
+
+            _controller = TestControllerBuilder.TestController().Build();
+
+            _controller.Create(testDTO);
+
+            _controller.Headers.Get(Constants.Headers.ErrorCode).ShouldEqual(invalidUserIntputErrorCode.ToString());
+        }
     }
 }

@@ -231,7 +231,7 @@ namespace ReSTCore.Controllers
                 message.Append(results.Count == 0
                                    ? "Invalid input"
                                    : string.Join(", ", results.Select(x => x.ErrorMessage).ToArray()));
-                SetResponseStatus(HttpStatusCode.BadRequest, message.ToString());
+                SetResponseStatus(HttpStatusCode.BadRequest, message.ToString(), RestCore.Configuration.InvalidUserIntputErrorCode);
                 return false;
             }
             return true;
@@ -417,10 +417,11 @@ namespace ReSTCore.Controllers
 
         protected override void OnException(ExceptionContext exceptionContext)
         {
-            if(RestCore.Configuration.HideRealException)
-                SetResponseStatus(HttpStatusCode.InternalServerError, RestCore.Configuration.DefaultExceptionText);
-            else
-                SetResponseStatus(HttpStatusCode.InternalServerError, exceptionContext.Exception.Message);
+            SetResponseStatus(HttpStatusCode.InternalServerError,
+                              RestCore.Configuration.HideRealException
+                                  ? RestCore.Configuration.DefaultExceptionText
+                                  : exceptionContext.Exception.Message,
+                              RestCore.Configuration.UnknownServerErrorCode);
             exceptionContext.Result = null;
             exceptionContext.ExceptionHandled = true;
         }

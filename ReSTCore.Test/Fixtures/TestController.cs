@@ -28,6 +28,13 @@ namespace ReSTCore.Test.Fixtures
             return HandleResult(RestfulAction.Index, result);
         }
 
+        public override ActionResult Create(TestDTO dto)
+        {
+            ValidateCreate(dto);
+            var result = new Result<List<TestDTO>> {ResultType = ResultType.Success};
+            return HandleResult(RestfulAction.Create, result);
+        }
+
         public void ThrowException(ExceptionContext context)
         {
             OnException(context);
