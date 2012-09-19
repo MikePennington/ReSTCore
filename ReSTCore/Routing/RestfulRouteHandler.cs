@@ -94,7 +94,7 @@ namespace ReSTCore.Routing
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("POST"), id = idValidationRegex }),
                 new MvcRouteHandler()));
             routeCollection.Add(new Route(
-                controllerPath + "/{id}/{property}/{value}",
+                controllerPath + "/{id}/{property}",
                 BuildDefaults(Constants.Actions.UpdateProperty, controller),
                 new RouteValueDictionary(new { httpMethod = new HttpMethodConstraint("PUT"), id = idValidationRegex }),
                 new MvcRouteHandler()));

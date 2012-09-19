@@ -90,7 +90,7 @@ namespace ReSTCore.Test.Routing
         {
             RestfulRouteHandler.BuildRoutes(_routes, ControllerName, RegexPattern.MatchPositiveInteger, ControllerName);
 
-            FindRoute(_routes, ControllerName + "/{id}/{property}/{value}", "PUT").Defaults["Action"].ShouldEqual("UpdateProperty");
+            FindRoute(_routes, ControllerName + "/{id}/{property}", "PUT").Defaults["Action"].ShouldEqual("UpdateProperty");
         }
 
         [TestMethod]
