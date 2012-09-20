@@ -24,7 +24,7 @@ namespace ReSTCore.DTO
                 if (Id == null)
                     return;
 
-                BuildUri();
+                Uri = BuildUri();
             }
         }
 
@@ -35,25 +35,25 @@ namespace ReSTCore.DTO
         [JsonIgnore]
         public abstract string Path { get; }
 
-        protected virtual void BuildUri()
+        protected virtual string BuildUri()
         {
-            if (Path != null)
+            if (Path == null)
+                return null;
+
+            if (RestCore.Configuration != null && RestCore.Configuration.ServiceBaseUri != null)
             {
-                if (RestCore.Configuration != null && RestCore.Configuration.ServiceBaseUri != null)
-                {
-                    Uri = RestCore.Configuration.ServiceBaseUri.Combine(Path).CombineUri(HttpUtility.UrlEncode(Id.ToString()));
-                }
-                else
-                {
-                    var builder = HttpContext.Current == null
-                                      ? new UriBuilder()
-                                      : new UriBuilder(HttpContext.Current.Request.Url);
-                    builder.Scheme = "http";
-                    builder.Path = System.IO.Path.Combine(Path, HttpUtility.UrlEncode(Id.ToString()));
-                    if (builder.Port == 80)
-                        builder.Port = -1;
-                    Uri = builder.ToString();
-                }
+                return RestCore.Configuration.ServiceBaseUri.Combine(Path).CombineUri(HttpUtility.UrlEncode(Id.ToString()));
+            }
+            else
+            {
+                var builder = HttpContext.Current == null
+                                  ? new UriBuilder()
+                                  : new UriBuilder(HttpContext.Current.Request.Url);
+                builder.Scheme = "http";
+                builder.Path = System.IO.Path.Combine(Path, HttpUtility.UrlEncode(Id.ToString()));
+                if (builder.Port == 80)
+                    builder.Port = -1;
+                return builder.ToString();
             }
         }
     }
