@@ -43,11 +43,13 @@ namespace ReSTCore.DTO
                 }
                 else
                 {
-                    var builder = HttpContext.Current == null
-                                      ? new UriBuilder()
-                                      : new UriBuilder(HttpContext.Current.Request.Url);
-                    builder.Scheme = "http";
-                    builder.Path = Path;
+                    Uri uri = HttpContext.Current == null ? new Uri("http://localhost") : HttpContext.Current.Request.Url;
+                    var builder = new UriBuilder
+                                      {
+                                          Scheme = uri.Scheme,
+                                          Host = uri.Host,
+                                          Path = Path
+                                      };
                     if (builder.Port == 80)
                         builder.Port = -1;
                     return builder.ToString();

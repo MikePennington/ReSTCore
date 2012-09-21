@@ -18,7 +18,7 @@ namespace ReSTCore.Test.DTO
         }
 
         [TestMethod]
-        public void UrlShouldBuildWhenIdIsSet()
+        public void UrlShouldUseDefaultBuildWhenNoBaseUriIsSet()
         {
             var testDto = new TestDTO {Id = "123"};
 
@@ -36,7 +36,7 @@ namespace ReSTCore.Test.DTO
         }
 
         [TestMethod]
-        public void ExceptionShouldNotBeThrownWhenCOnfigurationIsNull()
+        public void ExceptionShouldNotBeThrownWhenConfigurationIsNull()
         {
             RestCore.Configuration = null;
 
