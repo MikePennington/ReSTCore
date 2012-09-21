@@ -48,7 +48,8 @@ namespace ReSTCore.DTO
                                       {
                                           Scheme = uri.Scheme,
                                           Host = uri.Host,
-                                          Path = Path
+                                          Path = Path,
+                                          Port = uri.Port
                                       };
                     if (builder.Port == 80)
                         builder.Port = -1;
