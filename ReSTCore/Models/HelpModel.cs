@@ -33,7 +33,7 @@ namespace ReSTCore.Models
         {
             Type controllerType = controller.GetType();
 
-            var serviceHelp = (HelpAttribute)Attribute.GetCustomAttribute(controllerType, typeof(HelpAttribute));
+            var serviceHelp = (HelpAttribute)Attribute.GetCustomAttribute(controllerType, typeof(HelpAttribute), false);
             if (serviceHelp != null)
             {
                 if (serviceHelp.Ignore)
