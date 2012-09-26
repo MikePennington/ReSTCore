@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -49,7 +50,6 @@ namespace ReSTCore.Models
                     continue;
 
                 string thisControllerName = controllerType.Name.ToLower().Replace("controller", "");
-                string thisActionName = methodInfo.Name.ToLower();
                 foreach (var routeBase in controller.Url.RouteCollection)
                 {
                     if (routeBase.GetType() != typeof (Route))
@@ -73,15 +73,16 @@ namespace ReSTCore.Models
                     string actionName;
                     if(IsDefaultActionRoute(route))
                     {
-                        actionName = thisActionName;
+                        actionName = methodInfo.Name;
                     }
                     else
                     {
                         actionName = GetRouteValue<string>(route.Defaults, "action");
-                        if (actionName != "{action}"
-                            && !actionName.Equals(thisActionName, StringComparison.OrdinalIgnoreCase))
+                        if (actionName != "{action}" && !actionName.Equals(methodInfo.Name, StringComparison.OrdinalIgnoreCase))
                             continue;                        
                     }
+
+                    ServiceName = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(controllerName);
 
                     var routeModel = new RouteInfo { MethodName = methodInfo.Name };
 
@@ -121,7 +122,7 @@ namespace ReSTCore.Models
                         httpVerb = httpVerbs.ToString();
                     }
 
-                    var pathInfo = new PathInfo {Path = path, HttpVerb = httpVerb};
+                    var pathInfo = new PathInfo {Path = path.ToLower(), HttpVerb = httpVerb.ToUpper()};
 
                     // Parameters
                     var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
