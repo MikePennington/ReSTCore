@@ -16,5 +16,7 @@ namespace ReSTCore.Test.Fixtures
         {
             get { return "Test"; }
         }
+
+        public List<string> Errors { get; set; }
     }
 }

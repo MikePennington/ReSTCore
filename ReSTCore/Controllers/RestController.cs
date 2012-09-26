@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
@@ -129,10 +130,17 @@ namespace ReSTCore.Controllers
         /// This should only be called directly from the controller if you are not returning the base entity.
         /// </summary>
         /// <param name="result">The result to return</param>
+        /// <param name="acceptTypes">Accept types from request. Will try to pull this from the request if it is null.</param>
+        /// <param name="querystring">Querystring from request. Will try to pull this from the request if it is null.</param>
         /// <returns></returns>
-        protected ActionResult DynamicResult(object result)
+        protected ActionResult DynamicResult(object result, string[] acceptTypes = null, NameValueCollection querystring = null)
         {
-            ResponseFormatType bodyFormat = new ResponseFormatDecider(ResponseMappingSettings.Settings).Decide(HttpContext.Request.AcceptTypes, HttpContext.Request.QueryString);
+            if (acceptTypes == null && HttpContext != null && HttpContext.Request != null)
+                acceptTypes = HttpContext.Request.AcceptTypes;
+            if (querystring == null && HttpContext != null && HttpContext.Request != null)
+                querystring = HttpContext.Request.QueryString;
+            ResponseFormatType bodyFormat = new ResponseFormatDecider(ResponseMappingSettings.Settings)
+                .Decide(acceptTypes, querystring);
             switch (bodyFormat)
             {
                 case ResponseFormatType.Xml:
@@ -188,6 +196,9 @@ namespace ReSTCore.Controllers
         /// </summary>
         protected void SetResponseStatus(HttpStatusCode httpStatusCode, string errorMessage = null, int? errorCode = null)
         {
+            if (Response == null)
+                return;
+
             Response.StatusCode = (int)httpStatusCode;
             Response.TrySkipIisCustomErrors = true;
 
