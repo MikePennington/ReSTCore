@@ -36,7 +36,7 @@ namespace ReSTCore.Models
                 if (index > -1)
                     name = name.Substring(0, index);
 
-                var helpAttr = (HelpAttribute) Attribute.GetCustomAttribute(type, typeof (HelpAttribute));
+                var helpAttr = (HelpAttribute) Attribute.GetCustomAttribute(type, typeof (HelpAttribute), false);
                 var helpText = string.Empty;
                 if (helpAttr != null)
                 {
