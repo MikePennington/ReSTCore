@@ -111,7 +111,7 @@ namespace ReSTCore.Controllers
         /// Uri:    /[controller]/help
         /// </summary>
         /// <returns></returns>
-        [Help("Shows help information for the current controller")]
+        [Help(Ignore = true)]
         public ActionResult Help()
         {
             var model = new HelpModel(this);

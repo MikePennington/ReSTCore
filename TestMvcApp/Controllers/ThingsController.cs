@@ -31,6 +31,10 @@ namespace TestMvcApp.Controllers
         }
 
         [Help("Lists things")]
+        [HelpParam("param1", "better")]
+        [HelpParam("param2", "faster")]
+        [HelpParam("param3", "harder")]
+        [HelpParam("param4", "stronger")]
         public override ActionResult Index()
         {
             var things = _repo.Values.ToList();

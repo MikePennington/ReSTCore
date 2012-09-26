@@ -27,16 +27,28 @@ namespace TestMvcApp
                 );
 
             routes.MapRoute(
+                "GetSomethingJson",
+                "simple/getsomethingjson",
+                new {controller = "Simple", action = "GetSomethingJson"}
+                );
+
+            routes.MapRoute(
                 "DoSomething",
                 "simple/dosomething",
                 new {controller = "Simple", action = "DoSomething"},
                 new {httpMethod = new HttpMethodConstraint("POST")}
                 );
 
-            var config = new Configuration {ServiceName = "Profiles Service"};
+            var config = new Configuration {ServiceName = "Test Service"};
             RestCore.Register(config);
             RestCore.RegisterController("Things", RegexPattern.MatchPositiveInteger);
             RestCore.RegisterController("Simple", RegexPattern.MatchAny);
+
+            routes.MapRoute(
+                "Default", // Route name
+                "{controller}/{action}/{id}", // URL with parameters
+                new {controller = "Home", action = "Index", id = ""} // Parameter defaults
+                );
         }
 
         protected void Application_Start()

@@ -22,8 +22,18 @@ else
         {
             <tr>
                 <td nowrap="nowrap">@route.MethodName</td>
-                <td nowrap="nowrap">@route.Path</td>
-                <td nowrap="nowrap">@route.HttpVerb</td>
+                <td nowrap="nowrap">
+                @foreach (var pathInfo in @route.PathInfo)
+                {
+                    @pathInfo.Path<br/>
+                }
+                </td>
+                <td nowrap="nowrap">
+                @foreach (var pathInfo in @route.PathInfo)
+                {
+                    @pathInfo.HttpVerb<br/>
+                }
+                </td>
                 <td>
                     @route.Description
                     @if (route.Parameters != null && route.Parameters.Count > 0)
