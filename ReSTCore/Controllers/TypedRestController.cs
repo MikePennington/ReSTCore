@@ -100,18 +100,6 @@ namespace ReSTCore.Controllers
             return null;
         }
 
-        /// <summary>
-        /// Method: GET
-        /// Uri:    /[controller]/help
-        /// </summary>
-        /// <returns></returns>
-        [Help(Ignore = true)]
-        public ActionResult Help()
-        {
-            var model = new HelpModel(this);
-            return View("~/Views/RestCore/Help.cshtml", model);
-        }
-
         protected bool ValidateCreate(RestDTO<TId> entity)
         {
             if (entity == null)

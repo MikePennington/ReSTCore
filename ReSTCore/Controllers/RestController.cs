@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Web.Mvc;
 using ReSTCore.ActionResults;
+using ReSTCore.Attributes;
 using ReSTCore.Models;
 using ReSTCore.ResponseFormatting;
 using ReSTCore.Util;
@@ -14,6 +15,18 @@ namespace ReSTCore.Controllers
 {
     public class RestController : Controller
     {
+        /// <summary>
+        /// Method: GET
+        /// Uri:    /[controller]/help
+        /// </summary>
+        /// <returns></returns>
+        [Help(Ignore = true)]
+        public ActionResult Help()
+        {
+            var model = new HelpModel(this);
+            return View("~/Views/RestCore/Help.cshtml", model);
+        }
+
         /// <summary>
         /// Can be used as a helper method for the ShowProperty action
         /// </summary>

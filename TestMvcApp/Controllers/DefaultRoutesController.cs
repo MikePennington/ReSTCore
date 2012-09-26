@@ -6,7 +6,7 @@ using ReSTCore.DTO;
 
 namespace TestMvcApp.Controllers
 {
-    public class DefaultRoutesController : TypedRestController<string, RestDTO<string>>
+    public class DefaultRoutesController : RestController
     {
         [Help("Convert method")]
         public ActionResult Convert()
