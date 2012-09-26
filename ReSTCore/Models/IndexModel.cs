@@ -39,7 +39,11 @@ namespace ReSTCore.Models
                 var helpAttr = (HelpAttribute) Attribute.GetCustomAttribute(type, typeof (HelpAttribute));
                 var helpText = string.Empty;
                 if (helpAttr != null)
+                {
+                    if(helpAttr.Ignore)
+                        continue;
                     helpText = helpAttr.Text;
+                }
 
                 Services.Add(new ServiceModel
                                  {

@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\DefaultRoutesController.cs" />
+    <Compile Include="Controllers\IgnoredController.cs" />
     <Compile Include="Controllers\SimpleController.cs" />
     <Compile Include="Controllers\ThingsController.cs" />
     <Compile Include="DTOs\ErrorCodes.cs" />
