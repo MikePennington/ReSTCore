@@ -58,8 +58,9 @@
     <Compile Include="Attributes\HelpAttribute.cs" />
     <Compile Include="Attributes\HelpParamAttribute.cs" />
     <Compile Include="Configuration.cs" />
-    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\TypedRestController.cs" />
     <Compile Include="Controllers\HelpController.cs" />
+    <Compile Include="Controllers\RestController.cs" />
     <Compile Include="DTO\RestDTO.cs" />
     <Compile Include="DTO\Result.cs" />
     <Compile Include="DTO\ResultType.cs" />

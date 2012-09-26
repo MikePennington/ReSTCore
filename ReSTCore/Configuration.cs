@@ -32,5 +32,13 @@ namespace ReSTCore
         /// falls through to the OnException handler.
         /// </summary>
         public int? UnknownServerErrorCode { get; set; }
+
+        public bool HideResponseFormattingHelpSection { get; set; }
+
+        public bool HideErrorCodesHelpSection { get; set; }
+
+        public bool HideRestfulResponsesHelpSection { get; set; }
+
+        public bool HideDtosHelpSection { get; set; }
     }
 }

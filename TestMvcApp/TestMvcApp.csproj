@@ -62,7 +62,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\DefaulRoutesController.cs" />
+    <Compile Include="Controllers\DefaultRoutesController.cs" />
     <Compile Include="Controllers\SimpleController.cs" />
     <Compile Include="Controllers\ThingsController.cs" />
     <Compile Include="DTOs\ErrorCodes.cs" />

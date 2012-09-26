@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using ReSTCore.Attributes;
 using ReSTCore.Controllers;
 using ReSTCore.DTO;
@@ -25,10 +24,13 @@ namespace ReSTCore.Models
 
             // Load services
             var serviceTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
-                .Where(type => IsSubclassOfRawGeneric(typeof (BaseController<,>), type));
+                .Where(type => type.IsSubclassOf(typeof(RestController)));
             Services = new List<ServiceModel>();
             foreach (var type in serviceTypes)
             {
+                if (type.Name.StartsWith("TypedRestController"))
+                    continue;
+
                 string name = type.Name;
                 int index = name.IndexOf("Controller", StringComparison.Ordinal);
                 if (index > -1)

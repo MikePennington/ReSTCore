@@ -11,7 +11,7 @@ using ReSTCore.Util;
 
 namespace TestMvcApp.Controllers
 {
-    public class SimpleController : BaseController<string, StringDTO>
+    public class SimpleController : TypedRestController<string, StringDTO>
     {
         [Help("This gets something")]
         public ActionResult GetSomething()

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using ReSTCore.Attributes;
 using ReSTCore.Controllers;
@@ -9,7 +6,7 @@ using ReSTCore.DTO;
 
 namespace TestMvcApp.Controllers
 {
-    public class DefaulRoutesController : BaseController<string, RestDTO<string>>
+    public class DefaultRoutesController : TypedRestController<string, RestDTO<string>>
     {
         [Help("Convert method")]
         public ActionResult Convert()

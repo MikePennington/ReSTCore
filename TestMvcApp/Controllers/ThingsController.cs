@@ -13,7 +13,7 @@ using TestMvcApp.DTOs;
 namespace TestMvcApp.Controllers
 {
     [Help("This is just a test service")]
-    public class ThingsController : BaseController<int, Thing>
+    public class ThingsController : TypedRestController<int, Thing>
     {
         private static Dictionary<int, Thing> _repo;
 

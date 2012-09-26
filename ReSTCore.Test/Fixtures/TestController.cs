@@ -10,7 +10,7 @@ using ReSTCore.Routing;
 
 namespace ReSTCore.Test.Fixtures
 {
-    public class TestController : BaseController<int, TestDTO>
+    public class TestController : TypedRestController<int, TestDTO>
     {
         public NameValueCollection Headers { get; set; }
 

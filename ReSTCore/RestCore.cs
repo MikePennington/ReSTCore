@@ -42,7 +42,7 @@ namespace ReSTCore
         /// </summary>
         /// <param name="controllerName"></param>
         /// <param name="idRegex"></param>
-        public static void RegisterController(string controllerName, string idRegex)
+        public static void RegisterControllerRoutes(string controllerName, string idRegex)
         {
             RestfulRouteHandler.BuildRoutes(RouteTable.Routes, controllerName, idRegex, controllerName);
         }

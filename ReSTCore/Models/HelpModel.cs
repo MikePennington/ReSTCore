@@ -16,7 +16,7 @@ namespace ReSTCore.Models
     {
         public HelpModel(Controller controller)
         {
-            Routes = new List<RouteModel>();
+            Routes = new List<RouteInfo>();
             Populate(controller);
         }
 
@@ -26,7 +26,7 @@ namespace ReSTCore.Models
 
         public bool HelpDisabled { get; private set; }
 
-        public List<RouteModel> Routes { get; private set; }
+        public List<RouteInfo> Routes { get; private set; }
 
         private void Populate(Controller controller)
         {
@@ -56,26 +56,41 @@ namespace ReSTCore.Models
                         continue;
 
                     var route = (Route) routeBase;
-                    
-                    var controllerNamePair = route.Defaults.FirstOrDefault(x => x.Key.ToLower() == "controller");
-                    if(controllerNamePair.Value == null)
-                        continue;
-                    var controllerName = controllerNamePair.Value.ToString().ToLower();
-                    if (controllerName != "{controller}" && controllerName != thisControllerName)
-                        continue;
 
-                    var actionNamePair = route.Defaults.FirstOrDefault(x => x.Key.ToLower() == "action"); 
-                    if(actionNamePair.Value == null)
-                        continue;
-                    string actionName = actionNamePair.Value.ToString().ToLower();
-                    if (actionName != "{action}" && actionName != thisActionName)
-                        continue;
+                    string controllerName;
+                    if(IsDefaultControllerRoute(route))
+                    {
+                        controllerName = thisControllerName;
+                    }
+                    else
+                    {
+                        controllerName = GetRouteValue<string>(route.Defaults, "controller");
+                        if (controllerName != "{controller}" 
+                            && !controllerName.Equals(thisControllerName, StringComparison.OrdinalIgnoreCase))
+                            continue;                        
+                    }
 
-                    var routeModel = new RouteModel { MethodName = methodInfo.Name };
+                    string actionName;
+                    if(IsDefaultActionRoute(route))
+                    {
+                        actionName = thisActionName;
+                    }
+                    else
+                    {
+                        actionName = GetRouteValue<string>(route.Defaults, "action");
+                        if (actionName != "{action}"
+                            && !actionName.Equals(thisActionName, StringComparison.OrdinalIgnoreCase))
+                            continue;                        
+                    }
+
+                    var routeModel = new RouteInfo { MethodName = methodInfo.Name };
 
                     string path = route.Url.ToLower();
                     path = path.Replace("{controller}", controllerName);
                     path = path.Replace("{action}", actionName);
+                    var parameters = methodInfo.GetParameters();
+                    if(parameters.Length == 0 || parameters.FirstOrDefault(x => x.Name.ToLower() == "id") == null)
+                        path = path.Replace("/{id}", string.Empty);
 
                     var methodHelp = (HelpAttribute)Attribute.GetCustomAttribute(methodInfo, typeof(HelpAttribute), false);
                     if (methodHelp != null)
@@ -93,11 +108,11 @@ namespace ReSTCore.Models
                         httpVerb = "GET";
                     else if (Attribute.GetCustomAttribute(methodInfo, typeof(HttpPostAttribute), false) != null)
                         httpVerb = "POST";
-                    var httpMethodContraint = route.Constraints.FirstOrDefault(x => x.Key.ToLower() == "httpmethod");
-                    if (httpMethodContraint.Value != null && httpMethodContraint.Value.GetType() == typeof(HttpMethodConstraint))
+                    var httpMethodContraint = GetRouteValue<HttpMethodConstraint>(route.Constraints, "httpmethod");
+                    if (httpMethodContraint != null)
                     {
                         var httpVerbs = new StringBuilder();
-                        foreach (string verb in ((HttpMethodConstraint) httpMethodContraint.Value).AllowedMethods)
+                        foreach (string verb in httpMethodContraint.AllowedMethods)
                         {
                             if (httpVerbs.Length > 0)
                                 httpVerbs.Append(",");
@@ -110,10 +125,10 @@ namespace ReSTCore.Models
 
                     // Parameters
                     var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
-                    routeModel.Parameters = new List<ParameterModel>();
+                    routeModel.Parameters = new List<ParameterInfo>();
                     foreach (var helpParam in helpParams)
                     {
-                        var paramModel = new ParameterModel
+                        var paramModel = new ParameterInfo
                         {
                             Name = helpParam.Name,
                             Description = helpParam.Text,
@@ -126,7 +141,8 @@ namespace ReSTCore.Models
                     var existingRouteModel = Routes.FirstOrDefault(x => x.MethodName == routeModel.MethodName);
                     if (existingRouteModel != null)
                     {
-                        existingRouteModel.PathInfo.Add(pathInfo);
+                        if (!existingRouteModel.PathInfo.Contains(pathInfo))
+                            existingRouteModel.PathInfo.Add(pathInfo);
                     }
                     else
                     {
@@ -136,61 +152,40 @@ namespace ReSTCore.Models
                 }
             }
 
-            //foreach (var routeBase in controller.Url.RouteCollection)
-            //{
-            //    if (routeBase.GetType() != typeof (Route))
-            //        continue;
-
-            //    var route = (Route) routeBase;
-
-            //    object controllerName;
-            //    if (route.Defaults.TryGetValue("Controller", out controllerName))
-            //        ServiceName = controllerName.ToString();
-            //    if (!string.Equals(controller.GetType().Name, ServiceName + "Controller", StringComparison.OrdinalIgnoreCase))
-            //        continue;
-            //    if (string.IsNullOrWhiteSpace(route.Url) || route.Url.StartsWith("dtos") || route.Url.StartsWith("help") 
-            //        || route.Url.EndsWith("help"))
-            //        continue;
-
-            //    object action;
-            //    if (!route.Defaults.TryGetValue("Action", out action))
-            //        continue;
-
-            //    var help = (HelpAttribute) Attribute.GetCustomAttribute(controllerType, typeof (HelpAttribute));
-            //    if (help != null)
-            //    {
-            //        if (help.Ignore)
-            //        {
-            //            HelpDisabled = true;
-            //            return;
-            //        }
-            //        ServiceDescription = help.Text;
-            //    }
-
-            //    var routeModel = new RouteModel(route, controller, action.ToString());
-            //    if (!routeModel.Ignore)
-            //        Routes.Add(routeModel);
-            //}
-
             Routes.Sort();
+        }
+
+        private bool IsDefaultControllerRoute(Route route)
+        {
+            string[] uriParts = route.Url.Split('/');
+            if (uriParts.Length < 1 || string.IsNullOrWhiteSpace(uriParts[0]))
+                return false;
+            return uriParts[0].Equals("{controller}", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool IsDefaultActionRoute(Route route)
+        {
+            string[] uriParts = route.Url.Split('/');
+            if (uriParts.Length < 2 || string.IsNullOrWhiteSpace(uriParts[1]))
+                return false;
+            return uriParts[1].Equals("{action}", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private T GetRouteValue<T>(IEnumerable<KeyValuePair<string, object>> routeValues, string key) where T : class
+        {
+            var pair = routeValues.FirstOrDefault(x => x.Key.ToLower() == key);
+            return pair.Value as T;
         }
     }
 
-    public class RouteModel : IComparable<RouteModel>
+    public class RouteInfo : IComparable<RouteInfo>
     {
-        internal RouteModel()
+        internal RouteInfo()
         {
             Order = int.MaxValue;
             PathInfo = new List<PathInfo>();
-            Parameters = new List<ParameterModel>();
-            //Populate(route, controller, action);
+            Parameters = new List<ParameterInfo>();
         }
-
-        //internal RouteModel(Route route, Controller controller, string action)
-        //{
-        //    Order = int.MaxValue;
-        //    Populate(route, controller, action);
-        //}
 
         public string MethodName { get; internal set; }
 
@@ -200,67 +195,11 @@ namespace ReSTCore.Models
 
         public int Order { get; internal set; }
 
-        public List<ParameterModel> Parameters { get; internal set; }
+        public List<ParameterInfo> Parameters { get; internal set; }
 
         public List<PathInfo> PathInfo { get; internal set; }
 
-        //private void Populate(Route route, Controller controller, string action)
-        //{
-        //    Path = "/" + route.Url;
-        //    Path = Path.Replace("{controller}", controller.RouteData.Values["controller"].ToString());
-
-        //    // Get help information
-        //    Type controllerType = controller.GetType();
-        //    MethodInfo methodInfo = controllerType.GetMethod(action);
-        //    if (methodInfo != null)
-        //    {
-        //        var help = (HelpAttribute) Attribute.GetCustomAttribute(methodInfo, typeof (HelpAttribute), false);
-        //        if (help != null)
-        //        {
-        //            if (help.Ignore)
-        //            {
-        //                Ignore = true;
-        //                return;
-        //            }
-        //            Description = help.Text;
-        //            Order = help.Order;
-        //        }
-
-        //        var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
-        //        Parameters = new List<ParameterModel>();
-        //        foreach (var helpParam in helpParams)
-        //        {
-        //            var paramModel = new ParameterModel
-        //            {
-        //                Name = helpParam.Name,
-        //                Description = helpParam.Text,
-        //                Order = helpParam.Order
-        //            };
-        //            Parameters.Add(paramModel);
-        //        }
-        //        Parameters.Sort();
-        //    }
-
-        //    // Get Http verbs
-        //    foreach (var constraint in route.Constraints)
-        //    {
-        //        if (constraint.Key == "httpMethod" && constraint.Value.GetType() == typeof(HttpMethodConstraint))
-        //        {
-        //            var httpVerbs = new StringBuilder();
-        //            foreach (string verb in ((HttpMethodConstraint)constraint.Value).AllowedMethods)
-        //            {
-        //                if (httpVerbs.Length > 0)
-        //                    httpVerbs.Append(",");
-        //                httpVerbs.Append(verb);
-        //            }
-        //            HttpVerb = httpVerbs.ToString();
-        //        }
-        //    }
-
-        //    MethodName = action;
-        //}
-
-        public int CompareTo(RouteModel other)
+        public int CompareTo(RouteInfo other)
         {
             int compare = Order.CompareTo(other.Order);
             if (compare != 0)
@@ -275,9 +214,35 @@ namespace ReSTCore.Models
         public string Path { get; internal set; }
 
         public string HttpVerb { get; internal set; }
+        
+        public bool Equals(PathInfo other)
+        {
+            if (other == null || Path == null || HttpVerb == null)
+                return false;
+            return Path.Equals(other.Path, StringComparison.OrdinalIgnoreCase)
+                && HttpVerb.Equals(other.HttpVerb, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            if (Path == null || HttpVerb == null)
+                return false;
+            return Path.Equals(((PathInfo)obj).Path, StringComparison.OrdinalIgnoreCase)
+                && HttpVerb.Equals(((PathInfo)obj).HttpVerb, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override int GetHashCode()
+        {
+            return Path == null ? 0 : Path.GetHashCode();
+        }
     }
 
-    public class ParameterModel : IComparable<ParameterModel>
+    public class ParameterInfo : IComparable<ParameterInfo>
     {
         public string Name { get; set; }
 
@@ -285,7 +250,7 @@ namespace ReSTCore.Models
 
         public int Order { get; set; }
 
-        public int CompareTo(ParameterModel other)
+        public int CompareTo(ParameterInfo other)
         {
             int compare = Order.CompareTo(other.Order);
             if (compare != 0)

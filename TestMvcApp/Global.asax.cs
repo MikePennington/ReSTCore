@@ -39,10 +39,17 @@ namespace TestMvcApp
                 new {httpMethod = new HttpMethodConstraint("POST")}
                 );
 
-            var config = new Configuration {ServiceName = "Test Service"};
+            var config = new Configuration
+                             {
+                                 ServiceName = "Test Service",
+                                 HideDtosHelpSection = true,
+                                 HideResponseFormattingHelpSection = true,
+                                 HideRestfulResponsesHelpSection = true,
+                                 HideErrorCodesHelpSection = true
+                             };
             RestCore.Register(config);
-            RestCore.RegisterController("Things", RegexPattern.MatchPositiveInteger);
-            RestCore.RegisterController("Simple", RegexPattern.MatchAny);
+            RestCore.RegisterControllerRoutes("Things", RegexPattern.MatchPositiveInteger);
+            RestCore.RegisterControllerRoutes("Simple", RegexPattern.MatchAny);
 
             routes.MapRoute(
                 "Default", // Route name
