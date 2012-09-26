@@ -190,11 +190,11 @@ namespace ReSTCore.Controllers
                     return DynamicResult(dto);
                 case RestfulAction.Create:
                     SetResponseStatus(HttpStatusCode.Created);
-                    Response.AddHeader("Content-Location", uri);
+                    AddHeader("Content-Location", uri);
                     return properties.IncludeBodyInNonGetRequest ? DynamicResult(dto) : null;
                 case RestfulAction.Update:
                     SetResponseStatus(HttpStatusCode.Accepted);
-                    Response.AddHeader("Content-Location", uri);
+                    AddHeader("Content-Location", uri);
                     return properties.IncludeBodyInNonGetRequest ? DynamicResult(dto) : null;
                 case RestfulAction.Delete:
                     SetResponseStatus(HttpStatusCode.OK);
@@ -215,6 +215,13 @@ namespace ReSTCore.Controllers
             if (sources.Any())
                 dto = EntityMapper.Map<TEntity>(sources);
             return SuccessResult(action, properties, dto);
+        }
+
+        private void AddHeader(string name, string value)
+        {
+            if (Response == null)
+                return;
+            Response.AddHeader(name, value);
         }
     }
 }

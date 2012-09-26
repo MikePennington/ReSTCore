@@ -160,5 +160,12 @@ namespace ReSTCore.Test.Controllers
 
             _controller.Headers.Get(Constants.Headers.ErrorCode).ShouldEqual(invalidUserIntputErrorCode.ToString());
         }
+
+        [TestMethod]
+        public void CallWithNonMockedHttpContextShouldNotThrowException()
+        {
+            _controller = new TestController();
+            _controller.Index();
+        }
     }
 }

@@ -15,24 +15,27 @@ namespace ReSTCore.ResponseFormatting
 
         public ResponseFormatType Decide(IEnumerable<string> acceptTypes, NameValueCollection queryString)
         {
-            string callback = queryString.Get("callback");
-            if (!string.IsNullOrWhiteSpace(callback))
-                return ResponseFormatType.Jsonp;
-
-            string format = queryString.Get("format");
-            if (!string.IsNullOrEmpty(format))
+            if (queryString != null)
             {
-                format = format.ToLower();
-                switch (format)
+                string callback = queryString.Get("callback");
+                if (!string.IsNullOrWhiteSpace(callback))
+                    return ResponseFormatType.Jsonp;
+
+                string format = queryString.Get("format");
+                if (!string.IsNullOrEmpty(format))
                 {
-                    case "html":
-                        return ResponseFormatType.Html;
-                    case "xml":
-                        return ResponseFormatType.Xml;
-                    case "json":
-                        return ResponseFormatType.Json;
-                    case "jsonp":
-                        return ResponseFormatType.Jsonp;
+                    format = format.ToLower();
+                    switch (format)
+                    {
+                        case "html":
+                            return ResponseFormatType.Html;
+                        case "xml":
+                            return ResponseFormatType.Xml;
+                        case "json":
+                            return ResponseFormatType.Json;
+                        case "jsonp":
+                            return ResponseFormatType.Jsonp;
+                    }
                 }
             }
 
