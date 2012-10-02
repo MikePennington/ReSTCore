@@ -10,6 +10,8 @@ namespace TestMvcApp.DTOs
     {
         public string Name { get; set; }
 
+        public DateTime? Date { get; set; }
+
         public override string Path
         {
             get { return "Things"; }

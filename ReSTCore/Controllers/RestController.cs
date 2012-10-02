@@ -73,7 +73,7 @@ namespace ReSTCore.Controllers
                 {
                     propertyInfo.SetValue(entity, value, null);
                 }
-                else if (propertyInfo.PropertyType == typeof(short))
+                else if (propertyInfo.PropertyType == typeof(short) || propertyInfo.PropertyType == typeof(short?))
                 {
                     short newPropertyValue;
                     if (short.TryParse(value, out newPropertyValue))
@@ -81,7 +81,7 @@ namespace ReSTCore.Controllers
                     else
                         return false;
                 }
-                else if (propertyInfo.PropertyType == typeof(int))
+                else if (propertyInfo.PropertyType == typeof(int) || propertyInfo.PropertyType == typeof(int?))
                 {
                     int newPropertyValue;
                     if (int.TryParse(value, out newPropertyValue))
@@ -89,7 +89,7 @@ namespace ReSTCore.Controllers
                     else
                         return false;
                 }
-                else if (propertyInfo.PropertyType == typeof(long))
+                else if (propertyInfo.PropertyType == typeof(long) || propertyInfo.PropertyType == typeof(long?))
                 {
                     long newPropertyValue;
                     if (long.TryParse(value, out newPropertyValue))
@@ -97,7 +97,7 @@ namespace ReSTCore.Controllers
                     else
                         return false;
                 }
-                else if (propertyInfo.PropertyType == typeof(Guid))
+                else if (propertyInfo.PropertyType == typeof(Guid) || propertyInfo.PropertyType == typeof(Guid?))
                 {
                     Guid newPropertyValue;
                     if (Guid.TryParse(value, out newPropertyValue))
@@ -105,7 +105,7 @@ namespace ReSTCore.Controllers
                     else
                         return false;
                 }
-                else if (propertyInfo.PropertyType == typeof(DateTime))
+                else if (propertyInfo.PropertyType == typeof(DateTime) || propertyInfo.PropertyType == typeof(DateTime?))
                 {
                     DateTime newPropertyValue;
                     if (DateTime.TryParse(value, out newPropertyValue))
