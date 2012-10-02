@@ -73,19 +73,43 @@ namespace ReSTCore.Controllers
                 {
                     propertyInfo.SetValue(entity, value, null);
                 }
+                else if (propertyInfo.PropertyType == typeof(short))
+                {
+                    short newPropertyValue;
+                    if (short.TryParse(value, out newPropertyValue))
+                        propertyInfo.SetValue(entity, newPropertyValue, null);
+                    else
+                        return false;
+                }
                 else if (propertyInfo.PropertyType == typeof(int))
                 {
-                    int newInt;
-                    if (int.TryParse(value, out newInt))
-                        propertyInfo.SetValue(entity, newInt, null);
+                    int newPropertyValue;
+                    if (int.TryParse(value, out newPropertyValue))
+                        propertyInfo.SetValue(entity, newPropertyValue, null);
+                    else
+                        return false;
+                }
+                else if (propertyInfo.PropertyType == typeof(long))
+                {
+                    long newPropertyValue;
+                    if (long.TryParse(value, out newPropertyValue))
+                        propertyInfo.SetValue(entity, newPropertyValue, null);
                     else
                         return false;
                 }
                 else if (propertyInfo.PropertyType == typeof(Guid))
                 {
-                    Guid newGuid;
-                    if (Guid.TryParse(value, out newGuid))
-                        propertyInfo.SetValue(entity, newGuid, null);
+                    Guid newPropertyValue;
+                    if (Guid.TryParse(value, out newPropertyValue))
+                        propertyInfo.SetValue(entity, newPropertyValue, null);
+                    else
+                        return false;
+                }
+                else if (propertyInfo.PropertyType == typeof(DateTime))
+                {
+                    DateTime newPropertyValue;
+                    if (DateTime.TryParse(value, out newPropertyValue))
+                        propertyInfo.SetValue(entity, newPropertyValue, null);
                     else
                         return false;
                 }
