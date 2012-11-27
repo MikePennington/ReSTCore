@@ -148,9 +148,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\RestCore\Dto.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\RestCore\Help.cshtml" />
   </ItemGroup>
   <ItemGroup>

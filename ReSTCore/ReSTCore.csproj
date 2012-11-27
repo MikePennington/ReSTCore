@@ -65,7 +65,6 @@
     <Compile Include="DTO\Result.cs" />
     <Compile Include="DTO\ResultType.cs" />
     <Compile Include="Mapping\EntityMapper.cs" />
-    <Compile Include="Models\DtoModel.cs" />
     <Compile Include="Models\HelpModel.cs" />
     <Compile Include="Models\HtmlModel.cs" />
     <Compile Include="Models\IndexModel.cs" />
@@ -89,7 +88,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="Views\RestCore\Dto.cshtml" />
     <Content Include="Views\RestCore\Help.cshtml" />
     <Content Include="Views\RestCore\Html.cshtml" />
     <Content Include="Views\RestCore\Index.cshtml" />

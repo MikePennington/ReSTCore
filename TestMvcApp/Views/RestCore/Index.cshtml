@@ -15,13 +15,16 @@
 
 @if (!ReSTCore.RestCore.Configuration.HideDtosHelpSection)
 {
-    <h3>DTOs - @Html.ActionLink("View XSD", "DTO", "Help")</h3>
+    <h3>DTOs</h3>
     <ul>
-        @foreach (var dto in Model.Dtos)
+        @foreach (var dto in Model.DTOInfo.Names)
         {
-            <li>@dto.Name</li>
+            <li>@dto</li>
         }
     </ul>
+
+    <p>An XSD containing DTOs used by this service is below.</p>
+    <textarea style="width:100%; height:300px;" readonly="readonly">@Model.DTOInfo.Xsd</textarea>
 }
 
 @if (!ReSTCore.RestCore.Configuration.HideResponseFormattingHelpSection)

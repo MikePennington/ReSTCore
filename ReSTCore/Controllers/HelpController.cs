@@ -14,11 +14,5 @@ namespace ReSTCore.Controllers
             var model = new IndexModel();
             return View("~/Views/RestCore/Index.cshtml", model);
         }
-
-        public ActionResult DTO()
-        {
-            var model = new DtoModel();
-            return View("~/Views/RestCore/Dto.cshtml", model);
-        }
     }
 }

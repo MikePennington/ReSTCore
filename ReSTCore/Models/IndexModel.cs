@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Xml.Linq;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 using ReSTCore.Attributes;
 using ReSTCore.Controllers;
 using ReSTCore.DTO;
@@ -12,8 +16,8 @@ namespace ReSTCore.Models
 {
     public class IndexModel
     {
-        public List<ServiceModel> Services { get; private set; }
-        public List<DTO> Dtos { get; private set; }
+        public List<ServiceInfo> Services { get; private set; }
+        public DTOInfo DTOInfo { get; private set; }
         public List<ErrorCode> ErrorCodes { get; private set; }
         public List<ResponseFormat> ResponseTypes { get; private set; }
         public string DefaultResponseType { get; private set; }
@@ -25,7 +29,7 @@ namespace ReSTCore.Models
 
             // Load services
             var serviceTypes = ObjectFinder.FindServiceTypes();
-            Services = new List<ServiceModel>();
+            Services = new List<ServiceInfo>();
             foreach (var type in serviceTypes)
             {
                 if (type.Name.StartsWith("TypedRestController"))
@@ -45,7 +49,7 @@ namespace ReSTCore.Models
                     helpText = helpAttr.Text;
                 }
 
-                Services.Add(new ServiceModel
+                Services.Add(new ServiceInfo
                                  {
                                      Name = name,
                                      Help = helpText
@@ -54,11 +58,7 @@ namespace ReSTCore.Models
 
             // Load DTO types
             var dtoTypes = ObjectFinder.FindDtoTypes();
-            Dtos = new List<DTO>();
-            foreach (var type in dtoTypes)
-            {
-                Dtos.Add(new DTO {Name = type.Name});
-            }
+            DTOInfo = new DTOInfo { Names = dtoTypes.Select(x => x.Name).ToList(), Xsd = BuildXsd(dtoTypes) };
 
             // Load response types
             ResponseTypes = new List<ResponseFormat>();
@@ -94,17 +94,38 @@ namespace ReSTCore.Models
                 }
             }
         }
+
+        private string BuildXsd(IEnumerable<Type> dtoTypes)
+        {
+            using (var writer = new StringWriter())
+            {
+                XmlSchemas xmlSchemas = new XmlSchemas();
+                foreach (var type in dtoTypes)
+                {
+                    XmlReflectionImporter importer = new XmlReflectionImporter();
+                    XmlTypeMapping mapping = importer.ImportTypeMapping(type);
+                    XmlSchemaExporter xmlSchemaExporter = new XmlSchemaExporter(xmlSchemas);
+                    xmlSchemaExporter.ExportTypeMapping(mapping);
+                }
+                foreach (XmlSchema xmlSchema in xmlSchemas)
+                {
+                    xmlSchema.Write(writer);
+                }
+                return XElement.Parse(writer.ToString()).ToString();
+            }
+        }
     }
 
-    public class ServiceModel
+    public class ServiceInfo
     {
         public string Name { get; set; }
         public string Help { get; set; }
     }
 
-    public class DTO
+    public class DTOInfo
     {
-        public string Name { get; set; }
+        public List<string> Names { get; set; }
+        public string Xsd { get; set; }
     }
 
     public class ResponseFormat
