@@ -30,7 +30,7 @@ namespace ReSTCore
 
             RouteTable.Routes.MapRoute(
                 "DTO",
-                "help/dtos/{dtoName}",
+                "help/dtos",
                 new {controller = "Help", action = "DTO"}
                 );
 

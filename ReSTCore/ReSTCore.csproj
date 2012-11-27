@@ -83,6 +83,7 @@
     <Compile Include="Routing\RestfulRouteHandler.cs" />
     <Compile Include="Util\Constants.cs" />
     <Compile Include="Util\HandleResultProperties.cs" />
+    <Compile Include="Util\ObjectFinder.cs" />
     <Compile Include="Util\PropertyResult.cs" />
     <Compile Include="Util\UriExtensions.cs" />
     <Compile Include="ValueProviderFactories\XmlValueProviderFactory.cs" />

@@ -41,11 +41,7 @@ namespace TestMvcApp
 
             var config = new Configuration
                              {
-                                 ServiceName = "Test Service",
-                                 HideDtosHelpSection = true,
-                                 HideResponseFormattingHelpSection = true,
-                                 HideRestfulResponsesHelpSection = true,
-                                 HideErrorCodesHelpSection = true
+                                 ServiceName = "Test Service"
                              };
             RestCore.Register(config);
             RestCore.RegisterControllerRoutes("Things", RegexPattern.MatchPositiveInteger);

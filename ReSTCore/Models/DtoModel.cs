@@ -5,43 +5,42 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Xml.Schema;
 using System.Xml.Serialization;
 using ReSTCore.DTO;
+using ReSTCore.Util;
 
 namespace ReSTCore.Models
 {
     public class DtoModel
     {
-        public bool IsValid { get; private set; }
-        public string Name { get; private set; }
+        public List<string> Names { get; private set; }
         public string Xsd { get; private set; }
 
-        public DtoModel(string name)
+        public DtoModel()
         {
-            Type dtoType = Type.GetType(name);
-            if (dtoType == null)
-            {
-                Name = name;
-                return;
-            }
+            var dtoTypes = ObjectFinder.FindDtoTypes();
+            Xsd = BuildXsd(dtoTypes);
 
-            IsValid = true;
-            Name = dtoType.Name;
-            
-            Xsd = ExtractXsdFromType(dtoType);
+            Names = dtoTypes.Select(x => x.Name).ToList();
         }
 
-        private string ExtractXsdFromType(Type type)
+        private string BuildXsd(IEnumerable<Type> dtoTypes)
         {
-            XmlReflectionImporter importer = new XmlReflectionImporter();
-            XmlTypeMapping mapping = importer.ImportTypeMapping(type);
-            XmlSchemas xmlSchemas = new XmlSchemas();
-            XmlSchemaExporter xmlSchemaExporter = new XmlSchemaExporter(xmlSchemas);
-
             using (var writer = new StringWriter())
             {
-                xmlSchemaExporter.ExportTypeMapping(mapping);
-                xmlSchemas[0].Write(writer);
+                XmlSchemas xmlSchemas = new XmlSchemas();
+                foreach (var type in dtoTypes)
+                {
+                    XmlReflectionImporter importer = new XmlReflectionImporter();
+                    XmlTypeMapping mapping = importer.ImportTypeMapping(type);
+                    XmlSchemaExporter xmlSchemaExporter = new XmlSchemaExporter(xmlSchemas);
+                    xmlSchemaExporter.ExportTypeMapping(mapping);
+                }
+                foreach (XmlSchema xmlSchema in xmlSchemas)
+                {
+                    xmlSchema.Write(writer);                    
+                }
                 return XElement.Parse(writer.ToString()).ToString();
             }
         }

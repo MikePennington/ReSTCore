@@ -15,11 +15,11 @@
 
 @if (!ReSTCore.RestCore.Configuration.HideDtosHelpSection)
 {
-    <h3>DTOs</h3>
+    <h3>DTOs - @Html.ActionLink("View XSD", "DTO", "Help")</h3>
     <ul>
         @foreach (var dto in Model.Dtos)
         {
-            <li>@Html.ActionLink(@dto.Name, "DTO", "Help", new {dtoName = dto.FullName}, null)</li>
+            <li>@dto.Name</li>
         }
     </ul>
 }

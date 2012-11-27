@@ -15,9 +15,9 @@ namespace ReSTCore.Controllers
             return View("~/Views/RestCore/Index.cshtml", model);
         }
 
-        public ActionResult DTO(string dtoName)
+        public ActionResult DTO()
         {
-            var model = new DtoModel(dtoName);
+            var model = new DtoModel();
             return View("~/Views/RestCore/Dto.cshtml", model);
         }
     }

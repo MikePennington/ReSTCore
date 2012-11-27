@@ -6,6 +6,7 @@ using ReSTCore.Attributes;
 using ReSTCore.Controllers;
 using ReSTCore.DTO;
 using ReSTCore.ResponseFormatting;
+using ReSTCore.Util;
 
 namespace ReSTCore.Models
 {
@@ -23,8 +24,7 @@ namespace ReSTCore.Models
             ServiceName = RestCore.Configuration.ServiceName;
 
             // Load services
-            var serviceTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
-                .Where(type => type.IsSubclassOf(typeof(RestController)));
+            var serviceTypes = ObjectFinder.FindServiceTypes();
             Services = new List<ServiceModel>();
             foreach (var type in serviceTypes)
             {
@@ -53,16 +53,11 @@ namespace ReSTCore.Models
             }
 
             // Load DTO types
-            var dtoTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
-                .Where(type => IsSubclassOfRawGeneric(typeof (RestDTO<>), type));
+            var dtoTypes = ObjectFinder.FindDtoTypes();
             Dtos = new List<DTO>();
             foreach (var type in dtoTypes)
             {
-                Dtos.Add(new DTO
-                             {
-                                 Name = type.Name,
-                                 FullName = type.AssemblyQualifiedName
-                             });
+                Dtos.Add(new DTO {Name = type.Name});
             }
 
             // Load response types
@@ -99,27 +94,6 @@ namespace ReSTCore.Models
                 }
             }
         }
-
-        private static bool IsSubclassOfRawGeneric(Type generic, Type toCheck)
-        {
-            if (generic == null || toCheck == null)
-                return false;
-            if (generic == toCheck)
-                return false;
-
-            while (toCheck != typeof (object))
-            {
-                var cur = toCheck.IsGenericType ? toCheck.GetGenericTypeDefinition() : toCheck;
-                if (generic == cur)
-                {
-                    return true;
-                }
-                toCheck = toCheck.BaseType;
-                if (toCheck == null)
-                    return false;
-            }
-            return false;
-        }
     }
 
     public class ServiceModel
@@ -131,7 +105,6 @@ namespace ReSTCore.Models
     public class DTO
     {
         public string Name { get; set; }
-        public string FullName { get; set; }
     }
 
     public class ResponseFormat
