@@ -64,7 +64,6 @@
     <Compile Include="DTO\RestDTO.cs" />
     <Compile Include="DTO\Result.cs" />
     <Compile Include="DTO\ResultType.cs" />
-    <Compile Include="DTO\StringDTO.cs" />
     <Compile Include="Mapping\EntityMapper.cs" />
     <Compile Include="Models\DtoModel.cs" />
     <Compile Include="Models\HelpModel.cs" />

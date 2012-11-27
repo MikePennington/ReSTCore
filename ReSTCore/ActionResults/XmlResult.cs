@@ -33,11 +33,6 @@ namespace ReSTCore.ActionResults
 
             context.HttpContext.Response.ContentType = "text/xml";
 
-            if (ObjectToSerialize.GetType() == typeof(StringDTO))
-            {
-                ObjectToSerialize = new StringDTOSerializer { Value = ((StringDTO)ObjectToSerialize).Value };
-            }
-
             var ns = new XmlSerializerNamespaces();
             ns.Add(string.Empty, string.Empty);
 

@@ -31,9 +31,6 @@ namespace ReSTCore.ActionResults
             if (Data == null)
                 return;
 
-            if (Data.GetType() == typeof(StringDTO))
-                Data = new {value = ((StringDTO) Data).Value};
-
             var serializerSettings = new JsonSerializerSettings();
             serializerSettings.Converters.Add(new IsoDateTimeConverter());
             var serializedObject = JsonConvert.SerializeObject(Data, Formatting.None, serializerSettings);
