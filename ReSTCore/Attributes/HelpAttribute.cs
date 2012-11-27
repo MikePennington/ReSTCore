@@ -30,5 +30,9 @@ namespace ReSTCore.Attributes
         public bool Ignore { get; set; }
 
         public int Order { get; set; }
+
+        public Type Input { get; set; }
+
+        public Type Output { get; set; }
     }
 }

@@ -16,43 +16,44 @@ else
             <th>Name</th>
             <th>Path</th>
             <th>Verbs</th>
+            <th>Request DTO</th>
+            <th>Response DTO</th>
             <th>Description</th>
         </tr>
         @foreach (var route in Model.Routes)
         {
             <tr>
-                <td nowrap="nowrap">@route.MethodName</td>
-                <td nowrap="nowrap">
-                @foreach (var pathInfo in @route.PathInfo)
-                {
-                    @pathInfo.Path<br/>
-                }
-                </td>
-                <td nowrap="nowrap">
-                @foreach (var pathInfo in @route.PathInfo)
-                {
-                    @pathInfo.HttpVerb<br/>
-                }
-                </td>
-                <td>
-                    @route.Description
-                    @if (route.Parameters != null && route.Parameters.Count > 0)
+                <td class="left @(route.Parameters.Any() ? "" : "bottom")" nowrap="nowrap">@route.MethodName</td>
+                <td class="@(route.Parameters.Any() ? "" : "bottom")" nowrap="nowrap">
+                    @foreach (var pathInfo in @route.PathInfo)
                     {
-                        <table class="parameters">
-                            <tr>
-                                <th colspan="2">Parameters</th>
-                            </tr>
-                            @foreach (var param in route.Parameters)
-                            {
-                                <tr>
-                                    <td>@param.Name</td>
-                                    <td>@param.Description</td>
-                                </tr>
-                            }
-                        </table>
+                        @pathInfo.Path<br/>
                     }
                 </td>
+                <td class="@(route.Parameters.Any() ? "" : "bottom")" nowrap="nowrap">
+                    @foreach (var pathInfo in @route.PathInfo)
+                    {
+                        @pathInfo.HttpVerb<br/>
+                    }
+                </td>
+                <td class="@(route.Parameters.Any() ? "" : "bottom")">@route.RequestDTO</td>
+                <td class="@(route.Parameters.Any() ? "" : "bottom")">@route.ResponseDTO</td>
+                <td class="right @(route.Parameters.Any() ? "" : "bottom")">
+                    @route.Description
+                </td>
             </tr>
+            if (route.Parameters.Any())
+            {
+                <tr>
+                    <td class="parameters left @(route.Parameters.Any() ? "bottom" : "")">Parameters</td>
+                    <td class="parameters right @(route.Parameters.Any() ? "bottom" : "")" colspan="5">
+                        @foreach (var param in route.Parameters)
+                        {
+                            <div><strong>@param.Name</strong> - @param.Description</div>
+                        }
+                    </td>
+                </tr>
+            }
         }
     </table>
 }

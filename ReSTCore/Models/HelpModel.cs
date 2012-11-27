@@ -84,7 +84,7 @@ namespace ReSTCore.Models
 
                     ServiceName = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(controllerName);
 
-                    var routeModel = new RouteInfo { MethodName = methodInfo.Name };
+                    var routeInfo = new RouteInfo { MethodName = methodInfo.Name };
 
                     string path = route.Url.ToLower();
                     path = path.Replace("{controller}", controllerName);
@@ -99,8 +99,12 @@ namespace ReSTCore.Models
                         if (methodHelp.Ignore)
                             continue;
 
-                        routeModel.Description = methodHelp.Text;
-                        routeModel.Order = methodHelp.Order;
+                        routeInfo.Description = methodHelp.Text;
+                        routeInfo.Order = methodHelp.Order;
+                        if (methodHelp.Input != null)
+                            routeInfo.RequestDTO = BuildTypeName(methodHelp.Input);
+                        if (methodHelp.Output != null)
+                            routeInfo.ResponseDTO = BuildTypeName(methodHelp.Output);
                     }
 
                     // Get Http verbs
@@ -126,7 +130,7 @@ namespace ReSTCore.Models
 
                     // Parameters
                     var helpParams = (HelpParamAttribute[])Attribute.GetCustomAttributes(methodInfo, typeof(HelpParamAttribute), false);
-                    routeModel.Parameters = new List<ParameterInfo>();
+                    routeInfo.Parameters = new List<ParameterInfo>();
                     foreach (var helpParam in helpParams)
                     {
                         var paramModel = new ParameterInfo
@@ -135,11 +139,11 @@ namespace ReSTCore.Models
                             Description = helpParam.Text,
                             Order = helpParam.Order
                         };
-                        routeModel.Parameters.Add(paramModel);
+                        routeInfo.Parameters.Add(paramModel);
                     }
-                    routeModel.Parameters.Sort();
+                    routeInfo.Parameters.Sort();
 
-                    var existingRouteModel = Routes.FirstOrDefault(x => x.MethodName == routeModel.MethodName);
+                    var existingRouteModel = Routes.FirstOrDefault(x => x.MethodName == routeInfo.MethodName);
                     if (existingRouteModel != null)
                     {
                         if (!existingRouteModel.PathInfo.Contains(pathInfo))
@@ -147,8 +151,8 @@ namespace ReSTCore.Models
                     }
                     else
                     {
-                        routeModel.PathInfo.Add(pathInfo);
-                        Routes.Add(routeModel);                     
+                        routeInfo.PathInfo.Add(pathInfo);
+                        Routes.Add(routeInfo);                     
                     }
                 }
             }
@@ -177,6 +181,18 @@ namespace ReSTCore.Models
             var pair = routeValues.FirstOrDefault(x => x.Key.ToLower() == key);
             return pair.Value as T;
         }
+
+        private static string BuildTypeName(Type type)
+        {
+            if (type.GetGenericArguments().Length == 0)
+            {
+                return type.Name;
+            }
+            var genericArguments = type.GetGenericArguments();
+            var typeDefeninition = type.Name;
+            var unmangledName = typeDefeninition.Substring(0, typeDefeninition.IndexOf("`"));
+            return unmangledName + "<" + String.Join(",", genericArguments.Select(BuildTypeName)) + ">";
+        }
     }
 
     public class RouteInfo : IComparable<RouteInfo>
@@ -197,6 +213,10 @@ namespace ReSTCore.Models
         public int Order { get; internal set; }
 
         public List<ParameterInfo> Parameters { get; internal set; }
+
+        public string RequestDTO { get; internal set; }
+
+        public string ResponseDTO { get; internal set; }
 
         public List<PathInfo> PathInfo { get; internal set; }
 

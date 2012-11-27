@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Web.Mvc;
-using ReSTCore;
 using ReSTCore.Attributes;
 using ReSTCore.Controllers;
 using ReSTCore.DTO;
@@ -30,7 +28,7 @@ namespace TestMvcApp.Controllers
             }
         }
 
-        [Help("Lists things")]
+        [Help("Lists things", Output = typeof(List<Thing>))]
         [HelpParam("param1", "better")]
         [HelpParam("param2", "faster")]
         [HelpParam("param3", "harder")]
@@ -46,7 +44,7 @@ namespace TestMvcApp.Controllers
             return HandleResult(RestfulAction.Index, result);
         }
 
-        [Help("Looks up a thing")]
+        [Help("Looks up a thing", Output = typeof(Thing))]
         public override ActionResult Show(int id)
         {
             Thing thing = null;
@@ -55,7 +53,7 @@ namespace TestMvcApp.Controllers
             return HandleGetResult(thing);
         }
 
-        [Help("Creates a new thing")]
+        [Help("Creates a new thing", Input = typeof(Thing))]
         public override ActionResult Create(Thing thing)
         {
             if (!ValidateCreate(thing))
@@ -72,7 +70,7 @@ namespace TestMvcApp.Controllers
             return HandleResult(RestfulAction.Create, result);
         }
 
-        [Help("Updates a thing")]
+        [Help("Updates a thing", Input = typeof(Thing))]
         public override ActionResult Update(int id, Thing thing)
         {
             if (!ValidateUpdate(id, thing))
