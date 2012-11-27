@@ -93,6 +93,7 @@
     <Content Include="Views\RestCore\Html.cshtml" />
     <Content Include="Views\RestCore\Index.cshtml" />
     <Content Include="Views\RestCore\Layout.cshtml" />
+    <Content Include="Views\RestCore\Dto.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
