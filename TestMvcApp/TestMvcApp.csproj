@@ -68,6 +68,7 @@
     <Compile Include="Controllers\ThingsController.cs" />
     <Compile Include="DTOs\ErrorCodes.cs" />
     <Compile Include="DTOs\Thing.cs" />
+    <Compile Include="DTOs\Thing2.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -159,6 +160,9 @@
   <ItemGroup>
     <Content Include="Views\RestCore\Layout.cshtml" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\RestCore\Dto.cshtml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -176,7 +180,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>26982</DevelopmentServerPort>
+          <DevelopmentServerPort>31785</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

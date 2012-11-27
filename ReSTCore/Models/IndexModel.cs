@@ -17,7 +17,7 @@ namespace ReSTCore.Models
     public class IndexModel
     {
         public List<ServiceInfo> Services { get; private set; }
-        public DTOInfo DTOInfo { get; private set; }
+        public List<DTO> Dtos { get; private set; }
         public List<ErrorCode> ErrorCodes { get; private set; }
         public List<ResponseFormat> ResponseTypes { get; private set; }
         public string DefaultResponseType { get; private set; }
@@ -58,7 +58,15 @@ namespace ReSTCore.Models
 
             // Load DTO types
             var dtoTypes = ObjectFinder.FindDtoTypes();
-            DTOInfo = new DTOInfo { Names = dtoTypes.Select(x => x.Name).ToList(), Xsd = BuildXsd(dtoTypes) };
+            Dtos = new List<DTO>();
+            foreach (var type in dtoTypes)
+            {
+                Dtos.Add(new DTO
+                {
+                    Name = type.Name,
+                    FullName = type.AssemblyQualifiedName
+                });
+            }
 
             // Load response types
             ResponseTypes = new List<ResponseFormat>();
@@ -94,28 +102,6 @@ namespace ReSTCore.Models
                 }
             }
         }
-
-        private string BuildXsd(IEnumerable<Type> dtoTypes)
-        {
-            if (!dtoTypes.Any())
-                return null;
-            using (var writer = new StringWriter())
-            {
-                XmlSchemas xmlSchemas = new XmlSchemas();
-                foreach (var type in dtoTypes)
-                {
-                    XmlReflectionImporter importer = new XmlReflectionImporter();
-                    XmlTypeMapping mapping = importer.ImportTypeMapping(type);
-                    XmlSchemaExporter xmlSchemaExporter = new XmlSchemaExporter(xmlSchemas);
-                    xmlSchemaExporter.ExportTypeMapping(mapping);
-                }
-                foreach (XmlSchema xmlSchema in xmlSchemas)
-                {
-                    xmlSchema.Write(writer);
-                }
-                return XElement.Parse(writer.ToString()).ToString();
-            }
-        }
     }
 
     public class ServiceInfo
@@ -124,10 +110,10 @@ namespace ReSTCore.Models
         public string Help { get; set; }
     }
 
-    public class DTOInfo
+    public class DTO
     {
-        public List<string> Names { get; set; }
-        public string Xsd { get; set; }
+        public string Name { get; set; }
+        public string FullName { get; set; }
     }
 
     public class ResponseFormat

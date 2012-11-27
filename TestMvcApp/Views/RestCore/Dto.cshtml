@@ -1,0 +1,17 @@
+﻿﻿@model ReSTCore.Models.DtoModel
+@{
+    Layout = "Layout.cshtml";
+    ViewBag.Title = @Model.Name;
+}
+
+@if (!Model.IsValid)
+{
+    <div><i>@Model.Name</i> is not a valid DTO</div>
+}
+else
+{
+    <p>@Model.Description</p>
+    
+    <h2>XSD</h2>
+    <textarea style="width:100%; height:300px;" readonly="readonly">@Model.Xsd</textarea>
+}

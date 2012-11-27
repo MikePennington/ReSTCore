@@ -30,8 +30,8 @@ namespace ReSTCore
 
             RouteTable.Routes.MapRoute(
                 "DTO",
-                "help/dtos",
-                new {controller = "Help", action = "DTO"}
+                "help/dtos/{dtoName}",
+                new { controller = "Help", action = "DTO" }
                 );
 
             RouteTable.Routes.MapRoute("DefaultPage", "", new {controller = "Help", action = "Index"});
