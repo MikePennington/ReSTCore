@@ -16,15 +16,24 @@
 @if (!ReSTCore.RestCore.Configuration.HideDtosHelpSection)
 {
     <h3>DTOs</h3>
-    <ul>
-        @foreach (var dto in Model.DTOInfo.Names)
-        {
-            <li>@dto</li>
-        }
-    </ul>
-
-    <p>An XSD containing DTOs used by this service is below.</p>
-    <textarea style="width:100%; height:300px;" readonly="readonly">@Model.DTOInfo.Xsd</textarea>
+    if (Model.DTOInfo.Names.Any())
+    {
+        <ul>
+            @foreach (var dto in Model.DTOInfo.Names)
+            {
+                <li>@dto</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div>No DTOs to list</div>
+    }
+    if (!string.IsNullOrWhiteSpace(Model.DTOInfo.Xsd))
+    {
+        <p>An XSD containing DTOs used by this service is below.</p>
+        <textarea style="width: 100%; height: 300px;" readonly="readonly">@Model.DTOInfo.Xsd</textarea>
+    }
 }
 
 @if (!ReSTCore.RestCore.Configuration.HideResponseFormattingHelpSection)

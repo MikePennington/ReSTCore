@@ -97,6 +97,8 @@ namespace ReSTCore.Models
 
         private string BuildXsd(IEnumerable<Type> dtoTypes)
         {
+            if (!dtoTypes.Any())
+                return null;
             using (var writer = new StringWriter())
             {
                 XmlSchemas xmlSchemas = new XmlSchemas();
