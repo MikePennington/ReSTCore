@@ -36,8 +36,18 @@ else
                         @pathInfo.HttpVerb<br/>
                     }
                 </td>
-                <td class="@(route.Parameters.Any() ? "" : "bottom")">@route.RequestDTO</td>
-                <td class="@(route.Parameters.Any() ? "" : "bottom")">@route.ResponseDTO</td>
+                <td class="@(route.Parameters.Any() ? "" : "bottom")">
+                    @if (route.RequestDTO != null)
+                    {
+                        @Html.ActionLink(route.RequestDTO.Name, "DTO", "Help", new { dtoName = route.RequestDTO.Link }, null)
+                    }
+                </td>
+                <td class="@(route.Parameters.Any() ? "" : "bottom")">
+                    @if (route.ResponseDTO != null)
+                    {
+                        @Html.ActionLink(route.ResponseDTO.Name, "DTO", "Help", new { dtoName = route.ResponseDTO.Link }, null)
+                    }
+                </td>
                 <td class="right @(route.Parameters.Any() ? "" : "bottom")">
                     @route.Description
                 </td>
