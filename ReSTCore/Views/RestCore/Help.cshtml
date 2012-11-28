@@ -16,8 +16,11 @@ else
             <th>Name</th>
             <th>Path</th>
             <th>Verbs</th>
-            <th>Request DTO</th>
-            <th>Response DTO</th>
+            @if (!ReSTCore.RestCore.Configuration.HideDtosHelpSection)
+            {
+                <th>Request DTO</th>
+                <th>Response DTO</th>
+            }
             <th>Description</th>
         </tr>
         @foreach (var route in Model.Routes)
@@ -36,18 +39,21 @@ else
                         @pathInfo.HttpVerb<br/>
                     }
                 </td>
-                <td class="@(route.Parameters.Any() ? "" : "bottom")">
-                    @if (route.RequestDTO != null)
-                    {
-                        @Html.ActionLink(route.RequestDTO.Name, "DTO", "Help", new { dtoName = route.RequestDTO.Link }, null)
-                    }
-                </td>
-                <td class="@(route.Parameters.Any() ? "" : "bottom")">
-                    @if (route.ResponseDTO != null)
-                    {
-                        @Html.ActionLink(route.ResponseDTO.Name, "DTO", "Help", new { dtoName = route.ResponseDTO.Link }, null)
-                    }
-                </td>
+                @if (!ReSTCore.RestCore.Configuration.HideDtosHelpSection)
+                {
+                    <td class="@(route.Parameters.Any() ? "" : "bottom")">
+                        @if (route.RequestDTO != null)
+                        {
+                            @Html.ActionLink(route.RequestDTO.Name, "DTO", "Help", new {dtoName = route.RequestDTO.Link}, null)
+                        }
+                    </td>
+                    <td class="@(route.Parameters.Any() ? "" : "bottom")">
+                        @if (route.ResponseDTO != null)
+                        {
+                            @Html.ActionLink(route.ResponseDTO.Name, "DTO", "Help", new {dtoName = route.ResponseDTO.Link}, null)
+                        }
+                    </td>
+                }
                 <td class="right @(route.Parameters.Any() ? "" : "bottom")">
                     @route.Description
                 </td>
@@ -56,7 +62,7 @@ else
             {
                 <tr>
                     <td class="parameters left @(route.Parameters.Any() ? "bottom" : "")">Parameters</td>
-                    <td class="parameters right @(route.Parameters.Any() ? "bottom" : "")" colspan="5">
+                    <td class="parameters right @(route.Parameters.Any() ? "bottom" : "")" colspan="@(ReSTCore.RestCore.Configuration.HideDtosHelpSection ? "3" : "5")">
                         @foreach (var param in route.Parameters)
                         {
                             <div><strong>@param.Name</strong> - @param.Description</div>
