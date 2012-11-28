@@ -41,6 +41,14 @@ namespace ReSTCore
 
         public bool HideDtosHelpSection { get; set; }
 
+        /// <summary>
+        /// If DtoTypes is specfied, then ReSTCore will not try to lookup DtoTypes automatically
+        /// </summary>
         public List<Type> DtoTypes { get; set; }
+
+        /// <summary>
+        /// If DtoTypes is specfied, then ReSTCore will not try to lookup service controllers automatically
+        /// </summary>
+        public List<Type> ControllerTypes { get; set; }
     }
 }

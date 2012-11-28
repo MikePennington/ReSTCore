@@ -20,6 +20,9 @@ namespace ReSTCore.Util
 
         public static IEnumerable<Type> FindServiceTypes()
         {
+            if (RestCore.Configuration.ControllerTypes != null)
+                return RestCore.Configuration.ControllerTypes;
+
             var serviceTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
                 .Where(type => type.IsSubclassOf(typeof(RestController)));
             return serviceTypes;
