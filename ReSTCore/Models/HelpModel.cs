@@ -102,9 +102,21 @@ namespace ReSTCore.Models
                         routeInfo.Description = methodHelp.Text;
                         routeInfo.Order = methodHelp.Order;
                         if (methodHelp.Input != null)
-                            routeInfo.RequestDTO = BuildTypeName(methodHelp.Input);
+                        {
+                            routeInfo.RequestDTO = new DTOInfo
+                            {
+                                Name = BuildTypeName(methodHelp.Input),
+                                Link = UriHelper.ToBase64UrlString(methodHelp.Input.AssemblyQualifiedName)
+                            };
+                        }
                         if (methodHelp.Output != null)
-                            routeInfo.ResponseDTO = BuildTypeName(methodHelp.Output);
+                        {
+                            routeInfo.ResponseDTO = new DTOInfo
+                            {
+                                Name = BuildTypeName(methodHelp.Output),
+                                Link = UriHelper.ToBase64UrlString(methodHelp.Output.AssemblyQualifiedName)
+                            };
+                        }
                     }
 
                     // Get Http verbs
@@ -214,9 +226,9 @@ namespace ReSTCore.Models
 
         public List<ParameterInfo> Parameters { get; internal set; }
 
-        public string RequestDTO { get; internal set; }
+        public DTOInfo RequestDTO { get; internal set; }
 
-        public string ResponseDTO { get; internal set; }
+        public DTOInfo ResponseDTO { get; internal set; }
 
         public List<PathInfo> PathInfo { get; internal set; }
 
@@ -261,6 +273,12 @@ namespace ReSTCore.Models
         {
             return Path == null ? 0 : Path.GetHashCode();
         }
+    }
+
+    public class DTOInfo
+    {
+        public string Name { get; internal set; }
+        public string Link { get; internal set; }
     }
 
     public class ParameterInfo : IComparable<ParameterInfo>

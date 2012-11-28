@@ -7,7 +7,7 @@ using ReSTCore.Models;
 
 namespace ReSTCore.Util
 {
-    public static class UriExtensions
+    public static class UriHelper
     {
         public static string Combine(this Uri uri, string uri2)
         {
@@ -26,6 +26,18 @@ namespace ReSTCore.Util
             uri2 = uri2.TrimEnd(new char[] {'/', '\\'});
 
             return String.Format("{0}/{1}", uri1, uri2);
+        }
+
+        public static string ToBase64UrlString(string toEncode)
+        {
+            byte[] toEncodeAsBytes = Encoding.ASCII.GetBytes(toEncode);
+            return HttpUtility.UrlEncode(Convert.ToBase64String(toEncodeAsBytes));
+        }
+
+        public static string FromBase64UrlString(string encodedData)
+        {
+            byte[] encodedDataAsBytes = Convert.FromBase64String(HttpUtility.UrlDecode(encodedData));
+            return Encoding.ASCII.GetString(encodedDataAsBytes);
         }
     }
 }

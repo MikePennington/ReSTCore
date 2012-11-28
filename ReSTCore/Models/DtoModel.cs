@@ -4,6 +4,7 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 ﻿using ReSTCore.Attributes;
+﻿using ReSTCore.Util;
 
 namespace ReSTCore.Models
 {
@@ -14,12 +15,13 @@ namespace ReSTCore.Models
         public string Xsd { get; private set; }
         public string Description { get; private set; }
 
-        public DtoModel(string name)
+        public DtoModel(string fullName)
         {
-            Type dtoType = Type.GetType(name);
+            fullName = UriHelper.FromBase64UrlString(fullName);
+            Type dtoType = Type.GetType(fullName);
             if (dtoType == null)
             {
-                Name = name;
+                Name = fullName;
                 return;
             }
 

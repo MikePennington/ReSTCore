@@ -84,7 +84,7 @@
     <Compile Include="Util\HandleResultProperties.cs" />
     <Compile Include="Util\ObjectFinder.cs" />
     <Compile Include="Util\PropertyResult.cs" />
-    <Compile Include="Util\UriExtensions.cs" />
+    <Compile Include="Util\UriHelper.cs" />
     <Compile Include="ValueProviderFactories\XmlValueProviderFactory.cs" />
   </ItemGroup>
   <ItemGroup>

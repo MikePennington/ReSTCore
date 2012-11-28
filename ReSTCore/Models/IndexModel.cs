@@ -64,7 +64,7 @@ namespace ReSTCore.Models
                 Dtos.Add(new DTO
                 {
                     Name = type.Name,
-                    FullName = type.AssemblyQualifiedName
+                    Link = UriHelper.ToBase64UrlString(type.AssemblyQualifiedName)
                 });
             }
 
@@ -113,7 +113,7 @@ namespace ReSTCore.Models
     public class DTO
     {
         public string Name { get; set; }
-        public string FullName { get; set; }
+        public string Link { get; set; }
     }
 
     public class ResponseFormat

@@ -19,7 +19,7 @@
     <ul>
         @foreach (var dto in Model.Dtos)
         {
-            <li>@Html.ActionLink(@dto.Name, "DTO", "Help", new {dtoName = dto.FullName}, null)</li>
+            <li>@Html.ActionLink(dto.Name, "DTO", "Help", new {dtoName = dto.Link}, null)</li>
         }
     </ul>
 }
