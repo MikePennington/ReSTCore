@@ -13,15 +13,15 @@ else
     <h2>@Model.ServiceDescription</h2>
     <table>
         <tr>
-            <th>Name</th>
-            <th>Path</th>
-            <th>Verbs</th>
+            <th class="help">Name</th>
+            <th class="help">Path</th>
+            <th class="help">Verbs</th>
             @if (!ReSTCore.RestCore.Configuration.HideDtosHelpSection)
             {
-                <th>Request DTO</th>
-                <th>Response DTO</th>
+                <th class="help">Request DTO</th>
+                <th class="help">Response DTO</th>
             }
-            <th>Description</th>
+            <th class="help">Description</th>
         </tr>
         @foreach (var route in Model.Routes)
         {

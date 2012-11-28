@@ -40,5 +40,7 @@ namespace ReSTCore
         public bool HideRestfulResponsesHelpSection { get; set; }
 
         public bool HideDtosHelpSection { get; set; }
+
+        public List<Type> DtoTypes { get; set; }
     }
 }

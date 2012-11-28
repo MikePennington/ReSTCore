@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using ReSTCore;
 using ReSTCore.Routing;
+using TestMvcApp.DTOs;
 
 namespace TestMvcApp
 {
@@ -41,7 +42,8 @@ namespace TestMvcApp
 
             var config = new Configuration
                              {
-                                 ServiceName = "Test Service"
+                                 ServiceName = "Test Service",
+                                 DtoTypes = new List<Type> {typeof (Thing), typeof (Thing2)}
                              };
             RestCore.Register(config);
             RestCore.RegisterControllerRoutes("Things", RegexPattern.MatchPositiveInteger);

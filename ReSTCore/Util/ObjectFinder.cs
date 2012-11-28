@@ -10,6 +10,9 @@ namespace ReSTCore.Util
     {
         public static IEnumerable<Type> FindDtoTypes()
         {
+            if (RestCore.Configuration.DtoTypes != null)
+                return RestCore.Configuration.DtoTypes;
+
             var dtoTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(assembly => assembly.GetTypes())
                 .Where(type => IsSubclassOfRawGeneric(typeof(RestDTO<>), type));
             return dtoTypes;
