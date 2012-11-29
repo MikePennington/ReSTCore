@@ -122,53 +122,52 @@ namespace ReSTCore.Models
 
         private object GetDefaultForType(Type t)
         {
-            if (t == typeof(short) || t == typeof(short?)
-                || t == typeof(int) || t == typeof(int?)
-                || t == typeof(long) || t == typeof(long?)
-                || t == typeof(double) || t == typeof(double?)
-                || t == typeof(decimal) || t == typeof(decimal?))
+            try
             {
-                return 0;
+                if (t == typeof(char) || t == typeof(char?))
+                {
+                    return '?';
+                }
+                else if (t == typeof(string))
+                {
+                    return "?";
+                }
+                else if (t == typeof(Guid) || t == typeof(Guid?))
+                {
+                    return Guid.NewGuid();
+                }
+                else if (t == typeof(DateTime) || t == typeof(DateTime?))
+                {
+                    return DateTime.Now;
+                }
+                else if (t.IsValueType)
+                {
+                    return Activator.CreateInstance(t);
+                }
+                else if (t.IsArray)
+                {
+                    Array array = Array.CreateInstance(t.GetElementType(), 2);
+                    var defaultForType = GetDefaultForType(t.GetElementType());
+                    array.SetValue(defaultForType, 0);
+                    array.SetValue(defaultForType, 1);
+                    return array;
+                }
+                else if (typeof(IEnumerable).IsAssignableFrom(t))
+                {
+                    IList list = (IList)Activator.CreateInstance(t);
+                    Type[] generics = t.GetGenericArguments();
+                    var defaultForType = generics.Any() ? GetDefaultForType(generics[0]) : new object();
+                    list.Add(defaultForType);
+                    list.Add(defaultForType);
+                    return list;
+                }
+                else
+                {
+                    object innerObj = CreateEmptyObject(t);
+                    return innerObj;
+                }
             }
-            else if (t == typeof(char) || t == typeof(char?))
-            {
-                return '?';
-            }
-            else if (t == typeof(string))
-            {
-                return "?";
-            }
-            else if (t == typeof(Guid) || t == typeof(Guid?))
-            {
-                return Guid.NewGuid();
-            }
-            else if (t == typeof(DateTime) || t == typeof(DateTime?))
-            {
-                return DateTime.Now;
-            }
-            else if (t.IsArray)
-            {
-                Array array = Array.CreateInstance(t.GetElementType(), 2);
-                var defaultForType = GetDefaultForType(t.GetElementType());
-                array.SetValue(defaultForType, 0);
-                array.SetValue(defaultForType, 1);
-                return array;
-            }
-            else if (typeof(IEnumerable).IsAssignableFrom(t))
-            {
-                IList list = (IList)Activator.CreateInstance(t);
-                Type[] generics = t.GetGenericArguments();
-                var defaultForType = generics.Any() ? GetDefaultForType(generics[0]) : new object();
-                list.Add(defaultForType);
-                list.Add(defaultForType);
-                return list;
-            }
-            else if (!t.IsPrimitive)
-            {
-                object innerObj = CreateEmptyObject(t);
-                return innerObj;
-            }
-            else
+            catch (Exception)
             {
                 return null;
             }

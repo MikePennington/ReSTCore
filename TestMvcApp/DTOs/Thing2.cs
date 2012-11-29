@@ -11,15 +11,23 @@ namespace TestMvcApp.DTOs
     {
         public string Name { get; set; }
 
-        public int Number { get; set; }
+        public int Integer { get; set; }
 
-        public char? Letter { get; set; }
+        public char? Char { get; set; }
 
-        public DateTime? Date { get; set; }
+        public short Short { get; set; }
 
-        public List<string> List { get; set; }
+        public float Float { get; set; }
 
-        public int[] Array { get; set; }
+        public double Double { get; set; }
+
+        public decimal Decimal { get; set; }
+
+        public DateTime? NullableDate { get; set; }
+
+        public List<string> ListOfStrings { get; set; }
+
+        public int[] ArrayOfIntegers { get; set; }
 
         public Thing Object { get; set; }
 
