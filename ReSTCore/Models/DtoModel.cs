@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml.Serialization;
 ﻿using Newtonsoft.Json;
 ﻿using Newtonsoft.Json.Converters;
+﻿using Newtonsoft.Json.Linq;
 ﻿using ReSTCore.Attributes;
 ﻿using ReSTCore.Util;
 
@@ -96,7 +97,8 @@ namespace ReSTCore.Models
 
                 var serializerSettings = new JsonSerializerSettings();
                 serializerSettings.Converters.Add(new IsoDateTimeConverter());
-                return JsonConvert.SerializeObject(dto, Formatting.None, serializerSettings);
+                string json = JsonConvert.SerializeObject(dto, Formatting.None, serializerSettings);
+                return JObject.Parse(json).ToString();
             }
             catch (Exception e)
             {
