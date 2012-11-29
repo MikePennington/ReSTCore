@@ -1,7 +1,10 @@
 ﻿﻿using System;
-using System.IO;
+﻿using System.Collections;
+﻿using System.Collections.Generic;
+﻿using System.IO;
 using System.Linq;
-using System.Xml.Linq;
+﻿using System.Reflection;
+﻿using System.Xml.Linq;
 using System.Xml.Serialization;
 ﻿using Newtonsoft.Json;
 ﻿using Newtonsoft.Json.Converters;
@@ -104,37 +107,71 @@ namespace ReSTCore.Models
         private object CreateEmptyObject(Type t)
         {
             var obj = Activator.CreateInstance(t);
-            foreach (var propertyInfo in t.GetProperties())
+
+            // Properties with public setters
+            IEnumerable<PropertyInfo> properties = t.GetProperties(
+                BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.GetSetMethod() != null).Where(p => p.GetSetMethod().GetParameters().Count() == 1);
+            foreach (var propertyInfo in properties)
             {
-                if(!propertyInfo.CanWrite)
-                    continue;
-                if (propertyInfo.PropertyType == typeof(short) || propertyInfo.PropertyType == typeof(short?)
-                    || propertyInfo.PropertyType == typeof(int) || propertyInfo.PropertyType == typeof(int?)
-                    || propertyInfo.PropertyType == typeof(long) || propertyInfo.PropertyType == typeof(long?)
-                    || propertyInfo.PropertyType == typeof(double) || propertyInfo.PropertyType == typeof(double?)
-                    || propertyInfo.PropertyType == typeof(decimal) || propertyInfo.PropertyType == typeof(decimal?))
-                {
-                    continue;
-                }
-                else if (propertyInfo.PropertyType == typeof(string))
-                {
-                    propertyInfo.SetValue(obj, string.Empty, null);
-                }
-                else if (propertyInfo.PropertyType == typeof(Guid) || propertyInfo.PropertyType == typeof(Guid?))
-                {
-                    propertyInfo.SetValue(obj, Guid.NewGuid(), null);
-                }
-                else if (propertyInfo.PropertyType == typeof(DateTime) || propertyInfo.PropertyType == typeof(DateTime?))
-                {
-                    propertyInfo.SetValue(obj, DateTime.Now, null);
-                }
-                else if (!propertyInfo.GetType().IsPrimitive)
-                {
-                    object innerObj = CreateEmptyObject(propertyInfo.GetType());
-                    propertyInfo.SetValue(obj, innerObj, null);
-                }
+                propertyInfo.SetValue(obj, GetDefaultForType(propertyInfo.PropertyType), null);
             }
+
             return obj;
+        }
+
+        private object GetDefaultForType(Type t)
+        {
+            if (t == typeof(short) || t == typeof(short?)
+                || t == typeof(int) || t == typeof(int?)
+                || t == typeof(long) || t == typeof(long?)
+                || t == typeof(double) || t == typeof(double?)
+                || t == typeof(decimal) || t == typeof(decimal?))
+            {
+                return 0;
+            }
+            else if (t == typeof(char) || t == typeof(char?))
+            {
+                return '?';
+            }
+            else if (t == typeof(string))
+            {
+                return "?";
+            }
+            else if (t == typeof(Guid) || t == typeof(Guid?))
+            {
+                return Guid.NewGuid();
+            }
+            else if (t == typeof(DateTime) || t == typeof(DateTime?))
+            {
+                return DateTime.Now;
+            }
+            else if (t.IsArray)
+            {
+                Array array = Array.CreateInstance(t.GetElementType(), 2);
+                var defaultForType = GetDefaultForType(t.GetElementType());
+                array.SetValue(defaultForType, 0);
+                array.SetValue(defaultForType, 1);
+                return array;
+            }
+            else if (typeof(IEnumerable).IsAssignableFrom(t))
+            {
+                IList list = (IList)Activator.CreateInstance(t);
+                Type[] generics = t.GetGenericArguments();
+                var defaultForType = generics.Any() ? GetDefaultForType(generics[0]) : new object();
+                list.Add(defaultForType);
+                list.Add(defaultForType);
+                return list;
+            }
+            else if (!t.IsPrimitive)
+            {
+                object innerObj = CreateEmptyObject(t);
+                return innerObj;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
