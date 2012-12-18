@@ -34,7 +34,7 @@ namespace ReSTCore.Controllers
         /// <param name="entity"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        protected object GetProperty(object entity, string property)
+        protected PropertyResult<object> GetPropertyResult(object entity, string property)
         {
             if (entity == null || string.IsNullOrWhiteSpace(property))
                 return null;
